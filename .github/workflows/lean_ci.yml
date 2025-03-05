@@ -1,0 +1,39 @@
+name: CI - Build, Test, and Stress Test
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t formal-ml-ci .
+
+      - name: Run Lake build test inside container
+        run: |
+          docker run --name test_run formal-ml-ci /bin/bash -c "cd /app && lake build"
+
+      - name: Run translator tests
+        run: |
+          docker run formal-ml-ci python translator/generate_lean_model.py --model_json translator/another_nn.json --output_lean lean/generated/test_another_nn.lean
+          docker run formal-ml-ci python translator/generate_lean_model.py --model_json translator/log_reg.json --output_lean lean/generated/test_log_reg.lean
+          docker run formal-ml-ci python translator/generate_lean_model.py --model_json translator/decision_tree.json --output_lean lean/generated/test_decision_tree.lean
+
+      - name: Run Web Interface tests
+        run: |
+          docker run -d --name webtest formal-ml-ci python -m flask run --host=0.0.0.0 --port=5000
+          sleep 10
+          curl -s http://localhost:5000 > /dev/null
+          docker rm -f webtest
+
+      - name: Cleanup
+        if: always()
+        run: docker rm -f test_run || true

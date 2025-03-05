@@ -1,0 +1,8 @@
+{
+    "model_type": "log_reg",
+    "name": "myLogRegModel",
+    "input_dim":  4,
+    "weights": [0.2, -0.3, 0.5, 0.1],
+    "bias": 0.05
+  }
+  

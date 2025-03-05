@@ -1,0 +1,13 @@
+{
+    "model_type": "decision_tree",
+    "name": "myDecisionTree",
+    "feature_index": 0,
+    "threshold": 5.0,
+    "left": {
+      "leaf": 0
+    },
+    "right": {
+      "leaf": 1
+    }
+  }
+  

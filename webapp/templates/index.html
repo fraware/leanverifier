@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Formal ML Verification Portal</title>
+</head>
+<body>
+  <h1>Upload or Train a Model</h1>
+  <form method="POST" enctype="multipart/form-data">
+    <label for="model_json">Upload Model JSON files (multiple files allowed):</label>
+    <input type="file" name="model_json" accept=".json" multiple/><br><br>
+    <button type="submit">Submit</button>
+  </form>
+  <br>
+  <a href="/visualize">Visualize Model Architecture</a>
+  <br>
+  <a href="/logs">View Proof Logs</a>
+</body>
+</html>

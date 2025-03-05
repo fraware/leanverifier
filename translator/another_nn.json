@@ -1,0 +1,20 @@
+{
+    "model_type": "NN",
+    "name": "anotherNeuralNet",
+    "input_dim":  3,
+    "output_dim": 2,
+    "layers": [
+      {
+        "type": "linear",
+        "weight": [[0.2, 0.1, -0.1], [0.0, 0.3, 0.2], [0.1, -0.2, 0.4]],
+        "bias": [0.01, -0.02, 0.03]
+      },
+      { "type": "relu" },
+      {
+        "type": "linear",
+        "weight": [[-0.5, 0.5, 0.1], [0.3, -0.1, 0.2]],
+        "bias": [0.1, -0.1]
+      }
+    ]
+  }
+  

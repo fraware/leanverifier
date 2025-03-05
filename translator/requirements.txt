@@ -1,0 +1,4 @@
+flask
+argparse
+torch
+gunicorn
