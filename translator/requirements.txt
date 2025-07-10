@@ -2,3 +2,17 @@ flask
 argparse
 torch
 gunicorn
+transformers
+numpy
+scikit-learn
+matplotlib
+seaborn
+psutil
+requests
+pillow
+opencv-python
+accelerate
+deepspeed
+bitsandbytes
+sentencepiece
+protobuf

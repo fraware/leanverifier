@@ -1,0 +1,183 @@
+{
+  "small_models": {
+    "distilbert-base-uncased": {
+      "load_info": {
+        "model_name": "distilbert-base-uncased",
+        "load_time": 40.09184503555298,
+        "parameter_count": 66362880,
+        "config": {
+          "vocab_size": 30522,
+          "max_position_embeddings": 512,
+          "sinusoidal_pos_embds": false,
+          "n_layers": 6,
+          "n_heads": 12,
+          "dim": 768,
+          "hidden_dim": 3072,
+          "dropout": 0.1,
+          "attention_dropout": 0.1,
+          "activation": "gelu",
+          "initializer_range": 0.02,
+          "qa_dropout": 0.1,
+          "seq_classif_dropout": 0.2,
+          "return_dict": true,
+          "output_hidden_states": false,
+          "output_attentions": false,
+          "torchscript": false,
+          "torch_dtype": null,
+          "use_bfloat16": false,
+          "tf_legacy_loss": false,
+          "pruned_heads": {},
+          "tie_word_embeddings": true,
+          "chunk_size_feed_forward": 0,
+          "is_encoder_decoder": false,
+          "is_decoder": false,
+          "cross_attention_hidden_size": null,
+          "add_cross_attention": false,
+          "tie_encoder_decoder": false,
+          "max_length": 20,
+          "min_length": 0,
+          "do_sample": false,
+          "early_stopping": false,
+          "num_beams": 1,
+          "num_beam_groups": 1,
+          "diversity_penalty": 0.0,
+          "temperature": 1.0,
+          "top_k": 50,
+          "top_p": 1.0,
+          "typical_p": 1.0,
+          "repetition_penalty": 1.0,
+          "length_penalty": 1.0,
+          "no_repeat_ngram_size": 0,
+          "encoder_no_repeat_ngram_size": 0,
+          "bad_words_ids": null,
+          "num_return_sequences": 1,
+          "output_scores": false,
+          "return_dict_in_generate": false,
+          "forced_bos_token_id": null,
+          "forced_eos_token_id": null,
+          "remove_invalid_values": false,
+          "exponential_decay_length_penalty": null,
+          "suppress_tokens": null,
+          "begin_suppress_tokens": null,
+          "architectures": [
+            "DistilBertForMaskedLM"
+          ],
+          "finetuning_task": null,
+          "id2label": {
+            "0": "LABEL_0",
+            "1": "LABEL_1"
+          },
+          "label2id": {
+            "LABEL_0": 0,
+            "LABEL_1": 1
+          },
+          "tokenizer_class": null,
+          "prefix": null,
+          "bos_token_id": null,
+          "pad_token_id": 0,
+          "eos_token_id": null,
+          "sep_token_id": null,
+          "decoder_start_token_id": null,
+          "task_specific_params": null,
+          "problem_type": null,
+          "_name_or_path": "distilbert-base-uncased",
+          "_attn_implementation_autoset": false,
+          "transformers_version": "4.49.0",
+          "model_type": "distilbert",
+          "tie_weights_": true
+        }
+      },
+      "inference_results": {
+        "total_inference_time": 0.19658708572387695,
+        "average_inference_time": 0.03931741714477539,
+        "results": [
+          {
+            "text": "Hello, how are you today?",
+            "input_length": 9,
+            "output_shape": [
+              1,
+              9,
+              768
+            ],
+            "inference_time": 0.09221553802490234,
+            "memory_usage": 980.15625
+          },
+          {
+            "text": "The quick brown fox jumps over the lazy dog.",
+            "input_length": 12,
+            "output_shape": [
+              1,
+              12,
+              768
+            ],
+            "inference_time": 0.025884628295898438,
+            "memory_usage": 982.3359375
+          },
+          {
+            "text": "Machine learning is transforming the world.",
+            "input_length": 9,
+            "output_shape": [
+              1,
+              9,
+              768
+            ],
+            "inference_time": 0.024464845657348633,
+            "memory_usage": 982.37109375
+          },
+          {
+            "text": "This is a test of the transformer model capabilities.",
+            "input_length": 13,
+            "output_shape": [
+              1,
+              13,
+              768
+            ],
+            "inference_time": 0.02813577651977539,
+            "memory_usage": 984.046875
+          },
+          {
+            "text": "Natural language processing has made significant progress.",
+            "input_length": 10,
+            "output_shape": [
+              1,
+              10,
+              768
+            ],
+            "inference_time": 0.02588629722595215,
+            "memory_usage": 984.62109375
+          }
+        ]
+      },
+      "structure_info": {
+        "d_model": 768,
+        "num_heads": 12,
+        "num_layers": 6,
+        "vocab_size": 30522,
+        "max_seq_len": 512,
+        "token_embeddings_shape": [
+          30522,
+          768
+        ],
+        "positional_embeddings_shape": [
+          512,
+          768
+        ]
+      },
+      "memory_info": {
+        "rss_mb": 1083.21484375,
+        "vms_mb": 2451.6640625,
+        "model_size_mb": 253.158203125,
+        "parameter_count": 66362880
+      },
+      "status": "success"
+    },
+    "microsoft/DialoGPT-small": {
+      "status": "error",
+      "error": "Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`."
+    },
+    "gpt2": {
+      "status": "error",
+      "error": "Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`."
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "huggingface_model_size": "small",
+  "run_lean_build": true,
+  "run_huggingface_tests": true,
+  "run_lean_tests": true,
+  "run_memory_tests": true,
+  "run_smt_tests": true,
+  "run_web_interface_tests": true,
+  "timeout_settings": {
+    "lean_build": 120,
+    "huggingface_tests": 300,
+    "lean_tests": 180,
+    "memory_tests": 60,
+    "smt_tests": 120,
+    "web_interface_tests": 30
+  },
+  "memory_limits": {
+    "max_memory_mb": 8192,
+    "enable_memory_optimization": true
+  },
+  "smt_settings": {
+    "solver": "z3",
+    "timeout": 30,
+    "enable_proofs": true
+  }
+} 

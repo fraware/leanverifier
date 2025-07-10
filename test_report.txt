@@ -1,0 +1,45 @@
+
+COMPREHENSIVE TEST REPORT
+============================================================
+Total Test Categories: 6
+Successful: 3
+Failed: 3
+Timeout: 0
+Skipped: 0
+Total Execution Time: 197.06s
+Success Rate: 50.0%
+
+DETAILED RESULTS:
+============================================================
+
+LEAN_BUILD:
+  Status: error
+  Error: info: mathlib: cloning https://github.com/leanprover-community/mathlib4.git
+info: mathlib: checking out revision 'ddfa5af0f9cf22eb1db6b9578d1346973ca56cbb'
+info: plausible: URL has changed; you might need to delete '.\.\.lake/packages\plausible' manually
+info: plausible: checking out revision 'ebfb31672ab0a5b6d00a018ff67d2ec51ed66f3a'
+error: external command 'git' exited with code 128
+
+
+HUGGINGFACE_TESTS:
+  Status: success
+
+LEAN_TESTS:
+  Status: error
+  Error: info: plausible: URL has changed; you might need to delete '.\.\.lake/packages\plausible' manually
+info: plausible: checking out revision 'ebfb31672ab0a5b6d00a018ff67d2ec51ed66f3a'
+error: external command 'git' exited with code 128
+
+
+MEMORY_TESTS:
+  Status: success
+
+SMT_TESTS:
+  Status: error
+  Error: info: plausible: URL has changed; you might need to delete '.\.\.lake/packages\plausible' manually
+info: plausible: checking out revision 'ebfb31672ab0a5b6d00a018ff67d2ec51ed66f3a'
+error: external command 'git' exited with code 128
+
+
+WEB_INTERFACE_TESTS:
+  Status: success

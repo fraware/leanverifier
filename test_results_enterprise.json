@@ -1,0 +1,14 @@
+{
+  "basic_connectivity": {
+    "status": "success",
+    "status_code": 200
+  },
+  "model_visualization": {
+    "status": "error",
+    "status_code": 404
+  },
+  "logs_endpoint": {
+    "status": "success",
+    "status_code": 200
+  }
+}
