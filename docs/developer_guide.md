@@ -1,8 +1,8 @@
-# 🔧 FormalVerifML Developer Guide
+# FormalVerifML Developer Guide
 
 > **Comprehensive guide for developers extending and contributing to the FormalVerifML framework**
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Architecture Overview](#architecture-overview)
@@ -15,18 +15,18 @@
 - [Deployment](#deployment)
 - [Contributing](#contributing)
 
-## 🎯 Introduction
+## Introduction
 
 This guide is designed for developers who want to extend, contribute to, or understand the internal architecture of the FormalVerifML framework. It provides detailed information about the codebase structure, development practices, and extension points.
 
-### 🎯 Target Audience
+### Target Audience
 
 - **ML Engineers**: Adding new model types and verification properties
 - **Formal Verification Experts**: Extending proof capabilities and tactics
 - **DevOps Engineers**: Setting up CI/CD and deployment pipelines
 - **Researchers**: Implementing novel verification techniques
 
-### 🎯 Prerequisites
+### Prerequisites
 
 - **Python 3.9+** with development tools
 - **Lean 4** with mathlib
@@ -34,9 +34,9 @@ This guide is designed for developers who want to extend, contribute to, or unde
 - **Docker** for containerized development
 - **Understanding** of formal verification concepts
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
-### 🔄 System Architecture
+### System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -57,7 +57,7 @@ This guide is designed for developers who want to extend, contribute to, or unde
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-### 🧠 Core Components
+### Core Components
 
 #### 1. **Model Translation Layer**
 
@@ -83,9 +83,9 @@ This guide is designed for developers who want to extend, contribute to, or unde
 - **Components**: Unit tests, integration tests, performance benchmarks
 - **Key Files**: `translator/test_*.py`, `tests/`
 
-## 📁 Code Organization
+## Code Organization
 
-### 📂 Project Structure
+### Project Structure
 
 ```
 FormalVerifML/
@@ -146,7 +146,7 @@ FormalVerifML/
 └── 📄 README.md                     # Project overview
 ```
 
-### 🔧 Key Design Principles
+### Key Design Principles
 
 #### 1. **Modularity**
 
@@ -575,7 +575,7 @@ python -m pytest tests/performance/ --benchmark-only
 python -m pytest tests/property/ --hypothesis-profile=ci
 ```
 
-## 📏 Code Standards
+## Code Standards
 
 ### Python Standards
 
@@ -721,7 +721,7 @@ Closes #123
 6. **Code review** required
 7. **Merge** after approval
 
-## ⚡ Performance Optimization
+## Performance Optimization
 
 ### Memory Optimization
 
@@ -828,7 +828,7 @@ def monitor_memory_usage():
     }
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Docker Deployment
 
@@ -985,7 +985,7 @@ jobs:
           # Deployment commands
 ```
 
-## 🤝 Contributing
+## Contributing
 
 ### Contribution Process
 
@@ -1115,12 +1115,6 @@ lake build
 - [GitHub Issues](https://github.com/fraware/formal_verif_ml/issues)
 - [GitHub Discussions](https://github.com/fraware/formal_verif_ml/discussions)
 - [Discord Server](https://discord.gg/formalverifml)
-
-#### 3. **Code Examples**
-
-- [Sample Models](translator/*.json)
-- [Test Suites](translator/test_*.py)
-- [Proof Scripts](lean/FormalVerifML/proofs/)
 
 ---
 
