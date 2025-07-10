@@ -172,19 +172,12 @@ Upload your model JSON files through the web interface at `http://localhost:5000
 
 - **[User Guide](docs/user_guide.md)**: Getting started and basic usage
 - **[Developer Guide](docs/developer_guide.md)**: Architecture and extension guide
-- **[Improvement Roadmap](docs/improvement_roadmap.md)**: Future development plans
 
 ### API Reference
 
 - **[Lean API](lean/FormalVerifML/base/)**: Core definitions and properties
 - **[Python API](translator/)**: Model translation and testing tools
 - **[Web API](webapp/)**: Web interface and visualization
-
-### Examples
-
-- **[Sample Models](translator/*.json)**: Example model definitions
-- **[Test Suites](translator/test_*.py)**: Comprehensive testing examples
-- **[Proof Scripts](lean/FormalVerifML/proofs/)**: Verification proof examples
 
 ## Testing
 
