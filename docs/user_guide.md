@@ -1,8 +1,8 @@
-# 📖 FormalVerifML User Guide
+# FormalVerifML User Guide
 
 > **Complete guide to using FormalVerifML for formal verification of machine learning models**
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
@@ -14,25 +14,25 @@
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
 
-## 🎯 Introduction
+## Introduction
 
 FormalVerifML is a comprehensive framework for formally verifying machine learning models. This guide will walk you through the complete process from model export to verification results.
 
-### 🎯 What You'll Learn
+### What You'll Learn
 
 - How to export models from PyTorch/HuggingFace
 - How to generate Lean 4 verification code
 - How to run formal verification proofs
 - How to interpret results and troubleshoot issues
 
-### 🎯 Prerequisites
+### Prerequisites
 
 - **Python 3.9+** with pip
 - **Docker** (recommended) or **Lean 4** installation
 - **8GB+ RAM** for large model verification
 - **Basic understanding** of machine learning models
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Option 1: Docker (Recommended)
 
@@ -67,7 +67,7 @@ lake build
 python webapp/app.py
 ```
 
-### 🧪 Verify Installation
+### Verify Installation
 
 ```bash
 # Run the comprehensive test suite
@@ -76,7 +76,7 @@ python translator/run_comprehensive_tests.py
 # Expected output: All tests should pass
 ```
 
-## 📤 Model Export
+## Model Export
 
 ### Exporting PyTorch Models
 
@@ -121,7 +121,7 @@ python translator/export_from_pytorch.py \
     --verbose true
 ```
 
-### 📋 Export Configuration
+### Export Configuration
 
 Create a configuration file `export_config.json`:
 
@@ -145,7 +145,7 @@ Then use:
 python translator/export_from_pytorch.py --config export_config.json
 ```
 
-## 🔍 Verification Process
+## Verification Process
 
 ### Step 1: Generate Lean Code
 
@@ -186,7 +186,7 @@ cat logs/verification.log
 | `safety`           | Safety properties         | `--properties safety`           |
 | `all`              | All properties            | `--properties all`              |
 
-### 📊 Verification Configuration
+### Verification Configuration
 
 Create `verification_config.json`:
 
@@ -202,7 +202,7 @@ Create `verification_config.json`:
 }
 ```
 
-## 🌐 Web Interface
+## Web Interface
 
 ### Accessing the Interface
 
@@ -212,31 +212,31 @@ Create `verification_config.json`:
 
 ### Interface Features
 
-#### 📤 Model Upload
+#### Model Upload
 
 - **Drag & Drop**: Upload multiple JSON files
 - **File Validation**: Automatic format checking
 - **Progress Tracking**: Real-time upload progress
 
-#### 🔍 Model Visualization
+#### Model Visualization
 
 - **Architecture View**: Interactive model structure
 - **Layer Details**: Click to see layer information
 - **Export Options**: Save visualizations as PNG/SVG
 
-#### 📊 Verification Dashboard
+#### Verification Dashboard
 
 - **Property Status**: Visual indicators for each property
 - **Progress Tracking**: Real-time verification progress
 - **Results Summary**: Quick overview of verification results
 
-#### 📋 Logs and Debugging
+#### Logs and Debugging
 
 - **Live Logs**: Real-time log streaming
 - **Error Details**: Detailed error messages
 - **Debug Information**: Technical details for developers
 
-### 🎨 Interface Customization
+### Interface Customization
 
 ```python
 # Customize web interface settings
@@ -248,7 +248,7 @@ app.config.update(
 )
 ```
 
-## 💻 Command Line Usage
+## Command Line Usage
 
 ### Basic Commands
 
@@ -279,7 +279,7 @@ python translator/profile_verification.py --model model.json --iterations 10
 python translator/memory_analysis.py --model model.json --max_memory 8GB
 ```
 
-### 🔧 Command Line Options
+### Command Line Options
 
 #### Export Options
 
@@ -307,9 +307,9 @@ python translator/memory_analysis.py --model model.json --max_memory 8GB
 --verbose BOOL             # Verbose output
 ```
 
-## 🚀 Advanced Features
+## Advanced Features
 
-### 🏢 Enterprise Features
+### Enterprise Features
 
 #### Multi-User Support
 
@@ -341,7 +341,7 @@ python webapp/app.py --rate_limit 100 --rate_window 60
 python webapp/app.py --encryption --key_file keys/encryption.key
 ```
 
-### 📈 Large-Scale Models
+### Large-Scale Models
 
 #### Distributed Verification
 
@@ -366,7 +366,7 @@ python translator/generate_lean_model.py \
     --sparse_attention
 ```
 
-### 🎨 Vision Models
+### Vision Models
 
 #### Vision Transformer Support
 
@@ -383,7 +383,7 @@ python translator/verify_vision_properties.py \
     --properties attention_robustness,spatial_invariance
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -450,7 +450,7 @@ python webapp/app.py --max_file_size 32MB
 python translator/validate_model.py --model_file model.json
 ```
 
-### 🔍 Debug Mode
+### Debug Mode
 
 ```bash
 # Enable debug mode
@@ -463,7 +463,7 @@ python translator/export_from_pytorch.py --verbose --debug
 python translator/debug_report.py --model model.json --output debug_report.txt
 ```
 
-### 📊 Performance Monitoring
+### Performance Monitoring
 
 ```bash
 # Monitor memory usage
@@ -476,7 +476,7 @@ python translator/profile_verification.py --model model.json --iterations 5
 python translator/performance_report.py --output performance_report.json
 ```
 
-## ❓ FAQ
+## FAQ
 
 ### General Questions
 
