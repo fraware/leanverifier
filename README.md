@@ -1,4 +1,4 @@
-# 🚀 FormalVerifML: Formal Verification of Machine Learning Models
+# FormalVerifML: Formal Verification of Machine Learning Models
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
@@ -7,7 +7,7 @@
 
 > **Enterprise-grade formal verification framework for machine learning models with support for large-scale transformers, vision models, and distributed verification.**
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Key Features](#key-features)
@@ -19,25 +19,25 @@
 - [Contributing](#contributing)
 - [License](#license)
 
-## 🎯 Overview
+## Overview
 
 FormalVerifML is a state-of-the-art framework for formally verifying machine learning models using Lean 4. It provides comprehensive support for verifying properties such as robustness, fairness, interpretability, and safety across a wide range of model architectures.
 
-### 🎯 Mission
+### Mission
 
 To provide **mathematically rigorous verification** of ML models for high-stakes applications in healthcare, finance, autonomous systems, and other critical domains where model reliability is paramount.
 
-### 🌟 What Makes Us Different
+### What Makes Us Different
 
-- **🔬 Mathematical Rigor**: Uses Lean 4 theorem prover for formal mathematical proofs
-- **🏭 Production Ready**: Enterprise features with multi-user support, audit logging, and security
-- **📈 Scalable**: Supports models up to 100M+ parameters with distributed verification
-- **🎨 Comprehensive**: Vision transformers, large-scale models, and advanced architectures
-- **🔧 Automated**: SMT solver integration for automated proof generation
+- **Mathematical Rigor**: Uses Lean 4 theorem prover for formal mathematical proofs
+- **Production Ready**: Enterprise features with multi-user support, audit logging, and security
+- **Scalable**: Supports models up to 100M+ parameters with distributed verification
+- **Comprehensive**: Vision transformers, large-scale models, and advanced architectures
+- **Automated**: SMT solver integration for automated proof generation
 
-## ✨ Key Features
+## Key Features
 
-### 🧠 Model Support
+### Model Support
 
 - **Neural Networks**: Feed-forward, convolutional, recurrent architectures
 - **Transformers**: Full transformer support with multi-head attention
@@ -46,7 +46,7 @@ To provide **mathematically rigorous verification** of ML models for high-stakes
 - **Decision Trees**: Interpretable tree-based models
 - **Linear Models**: Logistic regression and linear classifiers
 
-### 🔍 Verification Properties
+### Verification Properties
 
 - **Robustness**: Adversarial robustness and input perturbation resistance
 - **Fairness**: Demographic parity, equalized odds, individual fairness
@@ -54,7 +54,7 @@ To provide **mathematically rigorous verification** of ML models for high-stakes
 - **Safety**: Causal masking, sequence invariance, memory efficiency
 - **Performance**: Memory optimization, distributed verification
 
-### 🏢 Enterprise Features
+### Enterprise Features
 
 - **Multi-User Support**: Role-based access control and session management
 - **Audit Logging**: Comprehensive activity tracking and compliance
@@ -62,7 +62,7 @@ To provide **mathematically rigorous verification** of ML models for high-stakes
 - **Distributed Processing**: Multi-node verification with fault tolerance
 - **Monitoring**: Real-time performance metrics and health checks
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 FormalVerifML/
@@ -80,14 +80,14 @@ FormalVerifML/
 └── 📁 .github/                      # CI/CD and workflows
 ```
 
-### 🔄 Data Flow
+### Data Flow
 
 1. **Model Export**: PyTorch/HuggingFace models → JSON format
 2. **Code Generation**: JSON → Lean 4 definitions
 3. **Verification**: Lean 4 → Formal proofs of properties
 4. **Results**: Web interface visualization and reports
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -128,7 +128,7 @@ lake build
 python webapp/app.py
 ```
 
-## 📖 Usage
+## Usage
 
 ### 1. Export Your Model
 
@@ -166,27 +166,27 @@ Upload your model JSON files through the web interface at `http://localhost:5000
 - Run verification proofs
 - View detailed logs and results
 
-## 📚 Documentation
+## Documentation
 
-### 📖 User Guides
+### User Guides
 
 - **[User Guide](docs/user_guide.md)**: Getting started and basic usage
 - **[Developer Guide](docs/developer_guide.md)**: Architecture and extension guide
 - **[Improvement Roadmap](docs/improvement_roadmap.md)**: Future development plans
 
-### 🔧 API Reference
+### API Reference
 
 - **[Lean API](lean/FormalVerifML/base/)**: Core definitions and properties
 - **[Python API](translator/)**: Model translation and testing tools
 - **[Web API](webapp/)**: Web interface and visualization
 
-### 📋 Examples
+### Examples
 
 - **[Sample Models](translator/*.json)**: Example model definitions
 - **[Test Suites](translator/test_*.py)**: Comprehensive testing examples
 - **[Proof Scripts](lean/FormalVerifML/proofs/)**: Verification proof examples
 
-## 🧪 Testing
+## Testing
 
 ### Run All Tests
 
@@ -209,7 +209,7 @@ python translator/test_huggingface_models.py
 - ✅ **Performance**: Memory usage and execution time
 - ✅ **Enterprise**: Multi-user, security, and audit features
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
@@ -242,14 +242,14 @@ python -m pytest tests/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Lean Community**: For the excellent theorem prover
 - **HuggingFace**: For transformer model support
 - **PyTorch Team**: For the deep learning framework
 - **Contributors**: All who have helped improve this project
 
-## 📞 Support
+## Support
 
 - **Issues**: [GitHub Issues](https://github.com/fraware/formal_verif_ml/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/fraware/formal_verif_ml/discussions)
