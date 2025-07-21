@@ -66,18 +66,18 @@ To provide **mathematically rigorous verification** of ML models for high-stakes
 
 ```
 FormalVerifML/
-├── 📁 lean/                          # Lean 4 formal verification code
-│   ├── 📁 FormalVerifML/
-│   │   ├── 📁 base/                  # Core definitions and properties
-│   │   ├── 📁 generated/             # Auto-generated model definitions
-│   │   └── 📁 proofs/                # Verification proof scripts
-├── 📁 translator/                    # Model translation and testing
-│   ├── 📄 export_from_pytorch.py    # PyTorch model export
-│   ├── 📄 generate_lean_model.py    # JSON to Lean code generation
-│   └── 📄 test_*.py                 # Comprehensive test suites
-├── 📁 webapp/                       # Web interface and visualization
-├── 📁 docs/                         # Documentation and guides
-└── 📁 .github/                      # CI/CD and workflows
+├── lean/                          # Lean 4 formal verification code
+│   ├── FormalVerifML/
+│   │   ├── base/                  # Core definitions and properties
+│   │   ├── generated/             # Auto-generated model definitions
+│   │   └── proofs/                # Verification proof scripts
+├── translator/                    # Model translation and testing
+│   ├── export_from_pytorch.py    # PyTorch model export
+│   ├── generate_lean_model.py    # JSON to Lean code generation
+│   └── test_*.py                 # Comprehensive test suites
+├── webapp/                       # Web interface and visualization
+├── docs/                         # Documentation and guides
+└── .github/                      # CI/CD and workflows
 ```
 
 ### Data Flow
@@ -231,7 +231,7 @@ python -m pytest tests/
 - **Documentation**: Comprehensive docstrings and comments
 - **Testing**: 90%+ test coverage required
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
