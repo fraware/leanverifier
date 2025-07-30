@@ -8,7 +8,7 @@
 > **Enterprise-grade formal verification framework for machine learning models with support for large-scale transformers, vision models, and distributed verification.**
 
 <p align="center">
-  <img src=".github/assets/FormalVerifML-RM.png" alt="FormalVerifML Logo" width="200"/>
+  <img src=".github/assets/FormalVerifML-RM.jpg" alt="FormalVerifML Logo" width="200"/>
 </p>
 
 ## Table of Contents
