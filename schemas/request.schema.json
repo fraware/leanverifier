@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/fraware/leanverifier/schemas/request.schema.json",
+  "title": "LeanVerifierVerifyRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "model_digest",
+    "reference_input",
+    "epsilon",
+    "dimension"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "leanverifier.request.v1"
+    },
+    "model_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dimension": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4096
+    },
+    "reference_input": {
+      "type": "array",
+      "minItems": 0,
+      "maxItems": 4096,
+      "items": {
+        "type": "string",
+        "pattern": "^(0|-?[1-9][0-9]*|-?[1-9][0-9]*/[1-9][0-9]*)$"
+      }
+    },
+    "epsilon": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*|[1-9][0-9]*/[1-9][0-9]*)$"
+    },
+    "comment": {
+      "type": "string",
+      "maxLength": 512
+    }
+  }
+}

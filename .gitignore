@@ -1,0 +1,43 @@
+# Lake / Lean
+.lake/
+*.olean
+*.ilean
+*.trace
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+.env
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.hypothesis/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Local verification workspaces (never commit)
+.verify_workspaces/
+/tmp/
+*.tmp
+
+# Release scratch
+artifacts/
+release-scratch/
+
+# Local coverage / packaging leftovers
+.coverage.*
+coverage.xml

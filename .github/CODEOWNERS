@@ -1,0 +1,26 @@
+# Default owners — replace placeholders with real GitHub usernames before enabling branch rulesets.
+# Program lead / claim approver / release authority: Mateo Petel (@fraware assumed).
+
+* @fraware
+
+# Formal kernel
+/LeanVerifier/ @fraware
+/lakefile.toml @fraware
+/lean-toolchain @fraware
+/lake-manifest.json @fraware
+
+# Schemas + generator
+/schemas/ @fraware
+/src/leanverifier/ @fraware
+/pyproject.toml @fraware
+
+# Security-sensitive paths
+/SECURITY.md @fraware
+/.github/workflows/ @fraware
+/scripts/audit_axioms.py @fraware
+/experimental/ @fraware
+
+# Documentation / claims
+/CLAIMS.md @fraware
+/STATUS.md @fraware
+/docs/ @fraware

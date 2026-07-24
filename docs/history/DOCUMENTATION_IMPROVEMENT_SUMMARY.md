@@ -1,6 +1,9 @@
-# 📚 FormalVerifML Documentation and Code Structure Improvement Summary
+> HISTORICAL DOCUMENT - unsupported. Relocated during LeanVerifier recovery (LV-00).
+> Not release evidence. See docs/history/README.md.
+>
+> Original title context: Documentation improvement summary
 
-> **Comprehensive overview of all improvements made to ensure the highest software engineering standards**
+# FormalVerifML Documentation and Code Structure Improvement Summary (historical)
 
 ## 🎯 Executive Summary
 

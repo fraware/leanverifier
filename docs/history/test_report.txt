@@ -1,3 +1,5 @@
+HISTORICAL ARTIFACT — unsupported. Relocated during LeanVerifier recovery (LV-00).
+Not release evidence. See docs/history/README.md.
 
 COMPREHENSIVE TEST REPORT
 ============================================================

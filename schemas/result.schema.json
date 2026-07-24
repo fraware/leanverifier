@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/fraware/leanverifier/schemas/result.schema.json",
+  "title": "LeanVerifierVerificationResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "exit_code",
+    "model_digest",
+    "request_digest",
+    "toolchain",
+    "theorem"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "leanverifier.result.v1"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "not-certified",
+        "invalid-input",
+        "build-failure",
+        "axiom-failure",
+        "digest-mismatch",
+        "internal-error",
+        "timeout"
+      ]
+    },
+    "exit_code": {
+      "type": "integer",
+      "enum": [0, 2, 3, 4, 5, 6, 7, 8]
+    },
+    "model_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "request_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "toolchain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "theorem": {
+      "type": "string",
+      "const": "LeanVerifier.AffineBinaryClassifier.affine_margin_robustness"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 2048
+    },
+    "generated_module": {
+      "type": "string",
+      "pattern": "^GeneratedModel_[0-9a-f]{16}$"
+    }
+  }
+}

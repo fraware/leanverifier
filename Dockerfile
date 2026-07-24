@@ -1,38 +1,40 @@
-FROM python:3.9-slim AS base
+# Lean-only LeanVerifier image (no Flask/ML web stack).
+# Elan is installed from a versioned GitHub release tarball with sha256 verification.
 
-# 1. Install needed packages, including `git`
+FROM ubuntu:24.04@sha256:72297848456d5d37d1262630108ab308d3e9ec7ed1c3286a32fe09856619a782
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    HOME=/home/lean \
+    PATH=/home/lean/.elan/bin:$PATH
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl git wget xz-utils g++ libgmp-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+      ca-certificates curl git gcc g++ xz-utils \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd -m -u 10001 lean
 
-# 2. Install elan (for Lean 4)
-RUN curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | bash -s -- -y
+USER lean
+WORKDIR /home/lean
 
-# Ensure the correct PATH is set for elan and lake
-ENV PATH="/root/.elan/bin:$PATH"
+ARG ELAN_VERSION=v4.2.3
+ARG ELAN_ARCH=x86_64-unknown-linux-gnu
+ARG ELAN_TARBALL_URL=https://github.com/leanprover/elan/releases/download/${ELAN_VERSION}/elan-${ELAN_ARCH}.tar.gz
+# sha256 of elan-x86_64-unknown-linux-gnu.tar.gz for v4.2.3 (computed 2026-07-24)
+ARG ELAN_TARBALL_SHA256=df0b2b3a439961ffcbb3985214365ffe40f49bc871df04dff268c7d8e21ca8b2
 
-# 3. Install Lean 4 and lake explicitly
-RUN elan toolchain install leanprover/lean4:4.17.0 && \
-    elan default leanprover/lean4:4.17.0
+RUN set -eux; \
+    curl -fsSL "$ELAN_TARBALL_URL" -o /tmp/elan.tar.gz; \
+    echo "$ELAN_TARBALL_SHA256  /tmp/elan.tar.gz" | sha256sum -c -; \
+    mkdir -p /tmp/elan-extract; \
+    tar -xzf /tmp/elan.tar.gz -C /tmp/elan-extract; \
+    /tmp/elan-extract/elan-init -y --default-toolchain none; \
+    rm -rf /tmp/elan.tar.gz /tmp/elan-extract
 
-# 4. Create and move to /app
-WORKDIR /app
+WORKDIR /workspace
+COPY --chown=lean:lean lean-toolchain lakefile.toml LeanVerifier.lean ./
+COPY --chown=lean:lean LeanVerifier ./LeanVerifier
+COPY --chown=lean:lean lake-manifest.json ./
 
-# 5. Copy entire project into /app
-COPY . /app
+RUN elan toolchain install "$(cat lean-toolchain)" \
+    && lake build
 
-# 6. Install Python dependencies
-RUN pip install --no-cache-dir -r translator/requirements.txt
-RUN pip install --no-cache-dir flask
-RUN pip install --no-cache-dir graphviz
-
-# 7. Switch to your Lean project folder
-WORKDIR /app/lean
-
-# 8. Build with Lake (which will clone mathlib if needed)
-RUN lake build
-
-# 9. Expose port 5000 for Flask
-EXPOSE 5000
-
-# 10. Launch your Flask web app
-CMD ["python", "/app/webapp/app.py"]
+CMD ["lake", "build"]
