@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+title: "LeanVerifier"
+message: "If you use LeanVerifier, please cite it using these metadata."
+type: software
+authors:
+  - family-names: Petel
+    given-names: "Matéo H."
+repository-code: "https://github.com/fraware/leanverifier"
+license: MIT
+version: "0.1.0"
+date-released: "2026-07-24"
+abstract: >-
+  Technical preview of exact formal checks for affine binary classifiers over
+  rationals, with an L-infinity margin-robustness theorem, deterministic
+  generator, and isolated CLI verify path. Not a general ML verification product.
+keywords:
+  - Lean 4
+  - formal verification
+  - robustness
+  - affine classifiers
+  - L-infinity
