@@ -1,3 +1,6 @@
+# QUARANTINED: Do not expose. Upload->lake build is unsupported and unsafe.
+# See SECURITY.md and experimental/legacy-formalverifml/WARNING.md.
+
 #!/usr/bin/env python3
 """
 FormalVerifML Web Interface
