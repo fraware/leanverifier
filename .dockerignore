@@ -1,2 +1,20 @@
-__pycache__
+# Lean-only image context: exclude experimental, Python, docs noise
+.git
 .lake
+**/__pycache__
+**/.pytest_cache
+.venv
+venv
+experimental
+docs
+tests
+src
+schemas
+examples
+scripts
+artifacts
+release-scratch
+*.md
+!LeanVerifier.lean
+pyproject.toml
+.dockerignore
