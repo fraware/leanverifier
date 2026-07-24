@@ -1,0 +1,1 @@
+{"bias":"0","comment":"repeated-weight unit example","dimension":3,"model_kind":"affine_binary","schema_version":"leanverifier.model.v1","weights":["1","1","-2"]}
