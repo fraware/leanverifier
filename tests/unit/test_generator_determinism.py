@@ -16,6 +16,9 @@ def test_generator_determinism_100(tmp_path: Path, monkeypatch) -> None:  # noqa
     assert name.startswith("GeneratedModel_")
     assert "![" not in source
     assert "Fin 3" in source
+    assert "norm_num" in source
+    assert "native" + "_decide" not in source
+    assert "+" + "native" not in source
     digests: set[bytes] = set()
     for i in range(100):
         root = (tmp_path / f"out_{i}").resolve()
