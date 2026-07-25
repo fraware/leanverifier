@@ -16,9 +16,13 @@ def test_mutation_weight_breaks_digest(tmp_path: Path) -> None:
     model["weights"][0] = "2"
     mp = tmp_path / "model.json"
     rp = tmp_path / "request.json"
+    out = tmp_path / "evidence"
     mp.write_text(json.dumps(model), encoding="utf-8")
     rp.write_text(json.dumps(req), encoding="utf-8")
-    assert main(["verify", "--model", str(mp), "--request", str(rp)]) == EXIT_DIGEST
+    assert (
+        main(["verify", "--model", str(mp), "--request", str(rp), "--output", str(out)])
+        == EXIT_DIGEST
+    )
 
 
 def test_mutation_epsilon_can_uncertify(tmp_path: Path) -> None:
@@ -26,9 +30,10 @@ def test_mutation_epsilon_can_uncertify(tmp_path: Path) -> None:
     req = make_request(model, [1], "2")
     mp = tmp_path / "model.json"
     rp = tmp_path / "request.json"
+    out = tmp_path / "evidence"
     mp.write_text(json.dumps(model), encoding="utf-8")
     rp.write_text(json.dumps(req), encoding="utf-8")
-    code = main(["verify", "--model", str(mp), "--request", str(rp)])
+    code = main(["verify", "--model", str(mp), "--request", str(rp), "--output", str(out)])
     assert code == EXIT_NOT_CERTIFIED
 
 

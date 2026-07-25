@@ -33,7 +33,11 @@ python scripts/audit_axioms.py
 ```bash
 uv sync --frozen --all-extras
 uv run leanverifier validate-model examples/affine_binary/model.json
-uv run leanverifier verify --model examples/affine_binary/model.json --request examples/affine_binary/request.json
+uv run leanverifier verify \
+  --model examples/affine_binary/model.json \
+  --request examples/affine_binary/request.json \
+  --output /tmp/lv-evidence
+uv run leanverifier inspect /tmp/lv-evidence
 ```
 
 | Exit | Meaning |

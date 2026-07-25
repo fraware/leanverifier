@@ -11,6 +11,6 @@
   "lean-project/lean-toolchain": "sha256:56a12c348c1fb7bb3e6475757349976a7e93e94fa2918bf92811b1b2e9634504",
   "schemas/model.schema.json": "sha256:92dae8ef78f5a3705af4bed5c0ef38e84f0458724b8191b61629214bd146fdf9",
   "schemas/request.schema.json": "sha256:53fbea85ecde62fc324c79cb8b800ab14188ea14850ef2b19849072640ee069e",
-  "schemas/result.schema.json": "sha256:8600dc2b1f76c37b1f649e40e78abf4923da2650251fd0679c71b9d5d0917b98",
+  "schemas/result.schema.json": "sha256:27fe3122976f564c6d79fcbdcb96bfa4ed949fb7225c55280116b5d7f99c4667",
   "scripts/generated_axiom_audit.py": "sha256:ceee23a207d4dd207b3f18b0bbcf0f023a6aa81ab38b37a0848d4fb750acf46d"
 }

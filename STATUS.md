@@ -25,11 +25,11 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | L∞ theorem + axiom audit (LV-03) | Library + generated `#print axioms` path; leanchecker job (F-001/F-020 addressed in R-01) |
 | Schemas (LV-04) | Implemented; R-03 hardening; packaged under `leanverifier.resources` (R-04) |
 | Generator (LV-05) | Implemented; Fin-pattern vectors; path symlink hardening (R-03); `norm_num` instance proofs (F-001) |
-| CLI (LV-06) | Implemented; timeout/process-group + env strip (R-03); materializes packaged Lean project (R-04); concrete axiom audit wired; evidence bundle pending R-02 merge |
+| CLI (LV-06) | Implemented; required `--output` evidence bundle + `inspect` (R-02); packaged Lean materialize (R-04); concrete axiom audit (R-01) |
 | Adversarial tests (LV-07) | Partial; R-03 security cases added; mutation/matrix remainder (F-013, F-014) in R-05 |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Four-layer TCB rewritten (F-020 addressed in R-01) |
-| Post-audit remediation (R-00–R-08) | R-00/R-01/R-03/R-04 in tree (merge); R-02 merging next; R-05 in progress |
+| Post-audit remediation (R-00–R-08) | R-00–R-04 integrated on this branch; R-05 in progress |
 | RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
 | Independent review (LV-11) | **Blocked** on external reviewers |
 | v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |

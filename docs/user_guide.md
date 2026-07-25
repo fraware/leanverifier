@@ -43,11 +43,12 @@ leanverifier validate-request examples/affine_binary/request.json
 leanverifier generate --model examples/affine_binary/model.json \
   --request examples/affine_binary/request.json --out-dir /tmp/lv-out
 leanverifier verify --model examples/affine_binary/model.json \
-  --request examples/affine_binary/request.json
-leanverifier inspect path/to/verification-result.json
+  --request examples/affine_binary/request.json \
+  --output /tmp/lv-evidence
+leanverifier inspect /tmp/lv-evidence
 ```
 
-`verify` builds in an isolated temporary workspace under the pinned toolchain, then runs the axiom audit. It does not compile into your working tree.
+`verify` requires `--output`. It builds in an isolated temporary workspace under the pinned toolchain, runs the axiom audit, then writes an immutable evidence bundle (canonical inputs, generated Lean, logs, axiom report, result, checksums) before deleting the temp workspace.
 
 ### Exit codes
 
@@ -64,7 +65,7 @@ leanverifier inspect path/to/verification-result.json
 
 ## Reading results
 
-`verification-result.json` records status, digests, toolchain pin, and theorem reference.
+The evidence bundle under `--output` is the authoritative record. `verification-result.json` includes claim, digests, generator version, Lean toolchain, mathlib revision, build/audit exit codes, axiom audit status, and `evidence_bundle_digest`. Use `leanverifier inspect <dir>` to recompute digests and reject tampering (`--rerun` optionally re-executes verify).
 Treat `verified` as certification of the concrete margin instance only — not deployment readiness or floating-point correctness.
 
 ## Further reading
