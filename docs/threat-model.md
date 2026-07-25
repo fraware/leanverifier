@@ -17,7 +17,10 @@
 | Threat | Control |
 |--------|---------|
 | Lean injection via crafted strings | Rational grammar; comments-only free text; fixed template |
-| Path escape / symlink race | Absolute output root; resolve; parent check; atomic replace |
+| Path escape / symlink race | Absolute output root; lstat components before resolve; reject symlink roots/intermediates/destinations; parent check; atomic replace |
+| Resource exhaustion (huge JSON/rationals) | Pre-decode 1 MiB cap; dim/rational/comment/Lean/log bounds; stable codes |
+| Env secret leakage into Lean | `_strip_env` allowlist only; tested |
+| Hung Lean/lake subprocess | Timeout + process-group kill (`timeout` exit 8) |
 | False `verified` on weak margin | Executable margin check before generate/verify; exit 2 |
 | Axiom smuggling | Source scan + `#print axioms` allowlist |
 | CI privilege escalation | No `pull_request_target`; least privilege; SHA pins |

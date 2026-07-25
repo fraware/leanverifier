@@ -9,6 +9,11 @@ from fractions import Fraction
 from typing import Any
 
 from leanverifier.errors import InvalidInputError
+from leanverifier.limits import (
+    CODE_RESOURCE_RATIONAL_CHARS,
+    CODE_UTF8_INVALID,
+    MAX_RATIONAL_CHARS,
+)
 
 _RAT_RE = re.compile(r"^(0|-?[1-9][0-9]*|-?[1-9][0-9]*/[1-9][0-9]*)$")
 _NONNEG_RAT_RE = re.compile(r"^(0|[1-9][0-9]*|[1-9][0-9]*/[1-9][0-9]*)$")
@@ -17,6 +22,11 @@ _NONNEG_RAT_RE = re.compile(r"^(0|[1-9][0-9]*|[1-9][0-9]*/[1-9][0-9]*)$")
 def parse_rational(text: str, *, nonnegative: bool = False) -> Fraction:
     if not isinstance(text, str):
         raise InvalidInputError("rational must be a string")
+    if len(text) > MAX_RATIONAL_CHARS:
+        raise InvalidInputError(
+            f"rational exceeds {MAX_RATIONAL_CHARS} characters",
+            code=CODE_RESOURCE_RATIONAL_CHARS,
+        )
     pattern = _NONNEG_RAT_RE if nonnegative else _RAT_RE
     if not pattern.fullmatch(text):
         raise InvalidInputError(f"non-canonical or illegal rational: {text!r}")
@@ -30,7 +40,8 @@ def parse_rational(text: str, *, nonnegative: bool = False) -> Fraction:
 
 
 def canonicalize_rational(value: Fraction) -> str:
-    value = Fraction(value).limit_denominator()
+    # Exact reduction only — never approximate via limit_denominator (F-009).
+    value = Fraction(value)
     if value == 0:
         return "0"
     num, den = value.numerator, value.denominator
@@ -68,7 +79,7 @@ def loads_strict_json(raw: str | bytes) -> Any:
         try:
             raw = raw.decode("utf-8")
         except UnicodeDecodeError as exc:
-            raise InvalidInputError("input must be UTF-8") from exc
+            raise InvalidInputError("input must be UTF-8", code=CODE_UTF8_INVALID) from exc
     try:
         obj = json.loads(raw, object_pairs_hook=_reject_duplicates)
     except json.JSONDecodeError as exc:

@@ -4,7 +4,7 @@
 **Status date:** 2026-07-25  
 **Program lead:** Mateo Petel  
 **Repository:** https://github.com/fraware/leanverifier  
-**Working branch:** `recovery/r-00-governance-ci` (post-audit remediation R-00)
+**Working branch:** `fix/r-03-input-and-path-hardening` (post-audit remediation R-03; based on R-00)
 
 ## Current claim posture
 
@@ -23,13 +23,13 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Build baseline (LV-01) | Lean 4.32.0 + mathlib `v4.32.0` pinned; SHA-pinned CI; Docker elan checksummed |
 | Affine kernel (LV-02) | Implemented; assurance incomplete (F-002) |
 | L∞ theorem + axiom audit (LV-03) | Library `#print axioms` path present; generated/native axiom gaps open (F-001, F-020) |
-| Schemas (LV-04) | Implemented; hardening gaps open (F-009–F-011) |
-| Generator (LV-05) | Implemented; Fin-pattern vectors; `native_decide` in templates (F-001) |
-| CLI (LV-06) | Implemented; evidence bundle incomplete (F-006) |
-| Adversarial tests (LV-07) | Partial; mutation/security gaps (F-013, F-014) |
+| Schemas (LV-04) | Implemented; R-03 hardening (dim≥1, resource limits) addressed |
+| Generator (LV-05) | Implemented; Fin-pattern vectors; path symlink hardening (R-03); `native_decide` remains (F-001) |
+| CLI (LV-06) | Implemented; timeout/process-group + env strip (R-03); evidence bundle incomplete (F-006) |
+| Adversarial tests (LV-07) | Partial; R-03 security cases added; mutation/matrix remainder (F-013, F-014) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Present; TCB rewrite pending (F-020) |
-| Post-audit remediation (R-00–R-08) | R-00 in progress; R-01–R-08 not done |
+| Post-audit remediation (R-00–R-08) | R-00 done locally; R-03 in this branch; R-01/R-02/R-04+ parallel or pending |
 | RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
 | Independent review (LV-11) | **Blocked** on external reviewers |
 | v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |
@@ -37,7 +37,7 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 ## Security posture
 
 - The legacy web upload → translator → `lake build` path is **quarantined** and must not be exposed.
-- Supported verification uses an isolated temp workspace and a deterministic generator with path containment (further hardening in R-03).
+- Supported verification uses an isolated temp workspace and a deterministic generator with pre-resolve symlink rejection and documented resource limits (R-03).
 - See [SECURITY.md](SECURITY.md).
 
 ## What “verified” means (today)

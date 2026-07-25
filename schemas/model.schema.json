@@ -16,20 +16,22 @@
     },
     "dimension": {
       "type": "integer",
-      "minimum": 0,
+      "minimum": 1,
       "maximum": 4096
     },
     "weights": {
       "type": "array",
-      "minItems": 0,
+      "minItems": 1,
       "maxItems": 4096,
       "items": {
         "type": "string",
+        "maxLength": 256,
         "pattern": "^(0|-?[1-9][0-9]*|-?[1-9][0-9]*/[1-9][0-9]*)$"
       }
     },
     "bias": {
       "type": "string",
+      "maxLength": 256,
       "pattern": "^(0|-?[1-9][0-9]*|-?[1-9][0-9]*/[1-9][0-9]*)$"
     },
     "comment": {

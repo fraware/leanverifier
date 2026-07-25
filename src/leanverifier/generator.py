@@ -4,12 +4,19 @@ from __future__ import annotations
 
 import os
 import re
+import stat
 import tempfile
 from fractions import Fraction
 from pathlib import Path
 
 from leanverifier.canonicalize import canonicalize_rational, module_token
 from leanverifier.errors import InvalidInputError
+from leanverifier.limits import (
+    CODE_RESOURCE_DIMENSION,
+    CODE_RESOURCE_GENERATED_LEAN,
+    CODE_SYMLINK_REJECTED,
+    MAX_GENERATED_LEAN_BYTES,
+)
 from leanverifier.manifest import ModelManifest, RequestManifest
 
 _MODULE_RE = re.compile(r"^GeneratedModel_[0-9a-f]{16}$")
@@ -28,9 +35,13 @@ def _lean_vec(values: list[Fraction]) -> str:
 
     Matrix ``![…]`` notation requires extra Mathlib imports and is easy to
     misparse as boolean ``!``; Fin-pattern matches match the supported kernel.
+    Dimension must be ≥ 1 (F-010); ``Fin 0`` is not a supported generator path.
     """
     if not values:
-        return "(fun (_ : Fin 0) => (0 : Rat))"
+        raise InvalidInputError(
+            "empty vectors are not supported (dimension must be >= 1)",
+            code=CODE_RESOURCE_DIMENSION,
+        )
     n = len(values)
     arms = "\n".join(f"    | ⟨{i}, _⟩ => {_lean_rat(v)}" for i, v in enumerate(values))
     return f"(fun (i : Fin {n}) =>\n  match i with\n{arms})"
@@ -42,6 +53,11 @@ def render_module(
     *,
     module_name: str | None = None,
 ) -> tuple[str, str]:
+    if model.dimension < 1 or request.dimension < 1:
+        raise InvalidInputError(
+            "dimension must be >= 1",
+            code=CODE_RESOURCE_DIMENSION,
+        )
     if model.dimension != request.dimension:
         raise InvalidInputError("model/request dimension mismatch")
     if request.model_digest != model.digest:
@@ -86,13 +102,60 @@ end {name}
     return name, source
 
 
+def _is_symlink_lstat(path: Path) -> bool:
+    """True if *path* itself is a symlink (lstat; does not follow)."""
+    try:
+        return stat.S_ISLNK(path.lstat().st_mode)
+    except FileNotFoundError:
+        return False
+    except OSError:
+        return False
+
+
+def _reject_symlink_components(path: Path) -> None:
+    """Reject any existing symlink component in *path* before resolve (F-012)."""
+    path = path.expanduser()
+    if not path.is_absolute():
+        raise InvalidInputError("output_root must be absolute")
+
+    current = Path(path.anchor)
+    # Drive/volume roots are not expected to be symlinks; still check if present.
+    if current.exists() and _is_symlink_lstat(current):
+        raise InvalidInputError(
+            f"output path must not contain symlink components: {current}",
+            code=CODE_SYMLINK_REJECTED,
+        )
+
+    for part in path.parts[len(Path(path.anchor).parts) :]:
+        current = current / part
+        try:
+            st = current.lstat()
+        except FileNotFoundError:
+            # Remainder does not exist yet (mkdir parents); no further components.
+            return
+        except OSError as exc:
+            raise InvalidInputError(
+                f"cannot inspect output path component: {current}",
+                code=CODE_SYMLINK_REJECTED,
+            ) from exc
+        if stat.S_ISLNK(st.st_mode):
+            raise InvalidInputError(
+                f"output path must not contain symlink components: {current}",
+                code=CODE_SYMLINK_REJECTED,
+            )
+
+
 def _assert_safe_output_root(output_root: Path) -> Path:
+    """Validate output root without resolving away the user-supplied path first.
+
+    Uses ``lstat`` on each component before ``resolve`` so symlink roots and
+    intermediate symlink directories are rejected (F-012).
+    """
     root = output_root.expanduser()
     if not root.is_absolute():
         raise InvalidInputError("output_root must be absolute")
+    _reject_symlink_components(root)
     resolved = root.resolve(strict=False)
-    if resolved.exists() and resolved.is_symlink():
-        raise InvalidInputError("output_root must not be a symlink")
     if resolved.exists() and not resolved.is_dir():
         raise InvalidInputError("output_root must be a directory")
     return resolved
@@ -105,13 +168,28 @@ def write_module_atomic(
     *,
     module_name: str | None = None,
 ) -> Path:
+    # Do not resolve the caller path before the symlink check — callers (CLI)
+    # must pass the user-supplied path so lstat can see symlink components.
     root = _assert_safe_output_root(output_root)
     root.mkdir(parents=True, exist_ok=True)
+    # Re-check after mkdir in case a race replaced a component with a symlink.
+    _reject_symlink_components(Path(output_root).expanduser())
     name, source = render_module(model, request, module_name=module_name)
-    target = (root / f"{name}.lean").resolve(strict=False)
-    if target.parent != root:
-        raise InvalidInputError("path escape detected")
     data = source.encode("utf-8")
+    if len(data) > MAX_GENERATED_LEAN_BYTES:
+        raise InvalidInputError(
+            f"generated Lean source exceeds {MAX_GENERATED_LEAN_BYTES} bytes",
+            code=CODE_RESOURCE_GENERATED_LEAN,
+        )
+    target = root / f"{name}.lean"
+    if _is_symlink_lstat(target):
+        raise InvalidInputError(
+            f"destination must not be a symlink: {target}",
+            code=CODE_SYMLINK_REJECTED,
+        )
+    resolved_target = target.resolve(strict=False)
+    if resolved_target.parent != root:
+        raise InvalidInputError("path escape detected")
     fd, tmp_name = tempfile.mkstemp(prefix=f".{name}.", suffix=".tmp", dir=root)
     tmp_path = Path(tmp_name)
     try:

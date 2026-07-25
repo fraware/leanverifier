@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
@@ -31,6 +32,7 @@ from leanverifier.errors import (
     TimeoutFailureError,
 )
 from leanverifier.generator import write_module_atomic
+from leanverifier.limits import CODE_TIMEOUT, MAX_BUILD_LOG_BYTES
 from leanverifier.manifest import load_model_path, load_request_path
 from leanverifier.result import VerificationResult
 
@@ -46,10 +48,99 @@ def _read_toolchain(repo: Path) -> str:
 
 
 def _strip_env() -> dict[str, str]:
+    """Minimal subprocess environment — secrets and unrelated vars are dropped."""
     keep = ["PATH", "HOME", "USERPROFILE", "SYSTEMROOT", "TMP", "TEMP", "LEAN_PATH"]
     env = {k: v for k, v in os.environ.items() if k in keep or k.startswith("ELAN")}
     env["LEANVERIFIER_OFFLINE"] = "1"
     return env
+
+
+def _truncate_log(text: str, *, limit: int = MAX_BUILD_LOG_BYTES) -> str:
+    """Retain at most *limit* UTF-8 bytes of log text (F-011 build-log bound)."""
+    raw = text.encode("utf-8", errors="replace")
+    if len(raw) <= limit:
+        return text
+    omitted = len(raw) - limit
+    prefix = f"[truncated {omitted} bytes]\n"
+    prefix_b = prefix.encode("utf-8")
+    budget = max(0, limit - len(prefix_b))
+    truncated = raw[-budget:] if budget else b""
+    # Avoid splitting a multibyte character at the front of the retained tail.
+    decoded = truncated.decode("utf-8", errors="ignore")
+    out = prefix + decoded
+    # Hard cap even if prefix accounting races with replacement chars.
+    out_b = out.encode("utf-8")
+    if len(out_b) > limit:
+        out = out_b[:limit].decode("utf-8", errors="ignore")
+    return out
+
+
+def _kill_process_group(proc: subprocess.Popen[str]) -> None:
+    """Best-effort kill of the process and its children (F-014 timeout)."""
+    if proc.poll() is not None:
+        return
+    try:
+        if sys.platform == "win32":
+            # /T kills the tree rooted at this PID.
+            subprocess.run(
+                ["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                capture_output=True,
+                check=False,
+                timeout=30,
+            )
+        else:
+            os.killpg(os.getpgid(proc.pid), signal.SIGKILL)
+    except (OSError, ProcessLookupError, subprocess.TimeoutExpired):
+        try:
+            proc.kill()
+        except OSError:
+            pass
+
+
+def _run_checked(
+    argv: list[str],
+    *,
+    cwd: Path,
+    timeout: int,
+    failure: type[LeanVerifierError],
+) -> None:
+    """Run a subprocess with timeout and process-group kill on expiry."""
+    if sys.platform == "win32":
+        proc: subprocess.Popen[str] = subprocess.Popen(
+            argv,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False,
+            env=_strip_env(),
+            text=True,
+            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        )
+    else:
+        proc = subprocess.Popen(
+            argv,
+            cwd=cwd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=False,
+            env=_strip_env(),
+            text=True,
+            start_new_session=True,
+        )
+    try:
+        stdout, stderr = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired as exc:
+        _kill_process_group(proc)
+        try:
+            stdout, stderr = proc.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            stdout, stderr = "", ""
+        detail = _truncate_log((stdout or "") + (stderr or "") + f"\n{exc}")
+        raise TimeoutFailureError(detail, code=CODE_TIMEOUT) from exc
+
+    combined = _truncate_log((stdout or "") + (stderr or ""))
+    if proc.returncode != 0:
+        raise failure(combined)
 
 
 def cmd_validate_model(path: Path) -> int:
@@ -71,55 +162,38 @@ def cmd_generate(model_path: Path, request_path: Path, out_dir: Path) -> int:
         raise DigestMismatchError("model digest mismatch")
     if not margin_ok(model.weights, model.bias, request.reference_input, request.epsilon):
         raise NotCertifiedError("insufficient margin")
-    path = write_module_atomic(model, request, out_dir.resolve())
+    # Pass the user path without resolve() so symlink components remain visible.
+    path = write_module_atomic(model, request, out_dir)
     print(json.dumps({"ok": True, "path": str(path)}, indent=2))
     return EXIT_VERIFIED
 
 
 def _run_lake_build(repo: Path, timeout: int) -> None:
-    proc = subprocess.run(
+    _run_checked(
         ["lake", "build"],
         cwd=repo,
-        capture_output=True,
-        text=True,
         timeout=timeout,
-        shell=False,
-        env=_strip_env(),
-        check=False,
+        failure=BuildFailureError,
     )
-    if proc.returncode != 0:
-        raise BuildFailureError(proc.stdout + proc.stderr)
 
 
 def _run_lean_file(repo: Path, lean_file: Path, timeout: int) -> None:
-    proc = subprocess.run(
+    _run_checked(
         ["lake", "env", "lean", str(lean_file.resolve())],
         cwd=repo,
-        capture_output=True,
-        text=True,
         timeout=timeout,
-        shell=False,
-        env=_strip_env(),
-        check=False,
+        failure=BuildFailureError,
     )
-    if proc.returncode != 0:
-        raise BuildFailureError(proc.stdout + proc.stderr)
 
 
 def _run_axiom_audit(repo: Path, timeout: int) -> None:
     script = repo / "scripts" / "audit_axioms.py"
-    proc = subprocess.run(
+    _run_checked(
         [sys.executable, str(script), "--repo", str(repo)],
         cwd=repo,
-        capture_output=True,
-        text=True,
         timeout=timeout,
-        shell=False,
-        env=_strip_env(),
-        check=False,
+        failure=AxiomFailureError,
     )
-    if proc.returncode != 0:
-        raise AxiomFailureError(proc.stdout + proc.stderr)
 
 
 def cmd_verify(
@@ -145,7 +219,7 @@ def cmd_verify(
             model_digest="sha256:" + "0" * 64,
             request_digest="sha256:" + "0" * 64,
             toolchain=toolchain,
-            message=str(exc),
+            message=f"{exc.code}: {exc}",
         )
         print(json.dumps(result.to_dict(), indent=2))
         return EXIT_INVALID
@@ -195,8 +269,6 @@ def cmd_verify(
         )
         print(json.dumps(result.to_dict(), indent=2))
         return EXIT_VERIFIED
-    except subprocess.TimeoutExpired as exc:
-        raise TimeoutFailureError(str(exc)) from exc
     finally:
         shutil.rmtree(workspace, ignore_errors=True)
 
@@ -235,6 +307,10 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def _format_error(exc: LeanVerifierError) -> str:
+    return f"{exc.code}: {exc}"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
@@ -251,25 +327,25 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_inspect(args.path)
         return EXIT_INTERNAL
     except NotCertifiedError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_NOT_CERTIFIED
     except InvalidInputError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_INVALID
     except BuildFailureError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_BUILD
     except AxiomFailureError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_AXIOM
     except DigestMismatchError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_DIGEST
     except TimeoutFailureError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return EXIT_TIMEOUT
     except LeanVerifierError as exc:
-        print(str(exc), file=sys.stderr)
+        print(_format_error(exc), file=sys.stderr)
         return exc.exit_code
     except Exception as exc:  # noqa: BLE001
         print(f"internal error: {exc}", file=sys.stderr)
