@@ -1,8 +1,8 @@
 {
   "lean-project/LeanVerifier.lean": "sha256:5d03208b4c827b7b332f7650a4c775516cf62cf6514089d20c286ad39f729991",
-  "lean-project/LeanVerifier/Audit/PublicAxioms.lean": "sha256:accaf3ca542a4771f1fe9f0b4982fde40f3cd866139c4e1b9a112618d9b5b85c",
+  "lean-project/LeanVerifier/Audit/PublicAxioms.lean": "sha256:8bab13188fab52eec615e82122bb9eb9440e8bc9d47abaca1dffb4d1e5027215",
   "lean-project/LeanVerifier/Data/Vector.lean": "sha256:94375816fa21ae679c4922df671ead671b2a810416c61b81e7df21e30a01adb8",
-  "lean-project/LeanVerifier/Model/AffineBinary.lean": "sha256:12eceeccda2917c4c343fea54ca0dd4b4373c998582a78d1953fa9920f64a7f7",
+  "lean-project/LeanVerifier/Model/AffineBinary.lean": "sha256:c4791de96778bd01fac66d4b0d243f855e1bc74ed3057ebec592afc8df466ff2",
   "lean-project/LeanVerifier/Property/ClassificationRobustness.lean": "sha256:b43757803c2559cc78263c2a619305c3458ec68f262741a338ca102866d5471b",
   "lean-project/LeanVerifier/Property/LinfBall.lean": "sha256:6c247ba08ba692354ca233390b1410aa12f8d32e196c2d3a07c1541e36e14e31",
   "lean-project/LeanVerifier/Theorem/AffineMarginRobustness.lean": "sha256:046eb8788ff0782fc1aa4ff9564c758e0c04c83018fadcf1dabbf54d0bcd7cd6",
@@ -12,5 +12,5 @@
   "schemas/model.schema.json": "sha256:92dae8ef78f5a3705af4bed5c0ef38e84f0458724b8191b61629214bd146fdf9",
   "schemas/request.schema.json": "sha256:53fbea85ecde62fc324c79cb8b800ab14188ea14850ef2b19849072640ee069e",
   "schemas/result.schema.json": "sha256:8600dc2b1f76c37b1f649e40e78abf4923da2650251fd0679c71b9d5d0917b98",
-  "scripts/generated_axiom_audit.py": "sha256:58845ad1c3802f4e846ee0dbdcdf1de878f87752af7b8cc907e68984a4b0e337"
+  "scripts/generated_axiom_audit.py": "sha256:ceee23a207d4dd207b3f18b0bbcf0f023a6aa81ab38b37a0848d4fb750acf46d"
 }

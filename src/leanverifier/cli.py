@@ -183,9 +183,23 @@ def _run_lean_file(repo: Path, lean_file: Path, timeout: int) -> None:
     )
 
 
-def _run_axiom_audit(lean_root: Path, script: Path, timeout: int) -> None:
+def _run_axiom_audit(
+    lean_root: Path,
+    script: Path,
+    timeout: int,
+    *,
+    generated: Path | None = None,
+) -> None:
+    """Run library axiom audit; when `generated` is set, also audit concrete decls.
+
+    Status ``verified`` requires the concrete generated module's ``eps_nonneg``,
+    ``margin_strict``, and ``certified`` axioms to pass the allowlist.
+    """
+    cmd = [sys.executable, str(script), "--repo", str(lean_root)]
+    if generated is not None:
+        cmd.extend(["--generated", str(generated.resolve())])
     _run_checked(
-        [sys.executable, str(script), "--repo", str(lean_root)],
+        cmd,
         cwd=lean_root,
         timeout=timeout,
         failure=AxiomFailureError,
@@ -262,7 +276,7 @@ def cmd_verify(
         remaining = max(1, timeout - int(time.monotonic() - started))
         _run_lean_file(lean_root, lean_path, remaining)
         remaining = max(1, timeout - int(time.monotonic() - started))
-        _run_axiom_audit(lean_root, audit_script, remaining)
+        _run_axiom_audit(lean_root, audit_script, remaining, generated=lean_path)
         result = VerificationResult(
             status="verified",
             exit_code=EXIT_VERIFIED,

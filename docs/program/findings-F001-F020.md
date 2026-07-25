@@ -2,14 +2,14 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-04)
+**Last updated:** 2026-07-25 (R-05 integration: R-01 + R-04)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
 
 | ID | Severity | Title | Owner | Target PR | Status | Notes |
 |----|----------|-------|-------|-----------|--------|-------|
-| F-001 | Critical | Generated proof escapes the declared axiom policy | Formal Lead | R-01 | Open | `native_decide` in generator templates |
-| F-002 | High | Public model theorems also use native evaluation | Formal Lead | R-01 | Open | `repeated_weight_*` theorems |
+| F-001 | Critical | Generated proof escapes the declared axiom policy | Formal Lead | R-01 | Addressed | Generator uses `norm_num`; concrete generated axiom audit before `verified` |
+| F-002 | High | Public model theorems also use native evaluation | Formal Lead | R-01 | Addressed | `repeated_weight_*` proved with `norm_num`; inventoried in PublicAxioms + audit |
 | F-003 | High | CI failed and was bypassed | Build/Release | R-00 / R-05 | Partial | R-00: add `master` push trigger; green Python gates; full job matrix in R-05 |
 | F-004 | Medium | The clean-worktree check is vacuous | Build/Release | R-00 / R-05 | Partial | R-00: lake + pytest + audits + generate outside checkout; full matrix in R-05 |
 | F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Open | Positive `verify` + inspect integration |
@@ -27,12 +27,16 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 | F-017 | Medium | The SBOM is a handwritten inventory scaffold | Build/Release | R-07 | Open | Tool-generated CycloneDX/SPDX |
 | F-018 | Medium | Documentation verification does not execute documentation | Docs / Build | R-05 | Open | `docs-commands` job |
 | F-019 | Medium | Claim status is premature | Program lead | R-00 | Addressed | CLAIMS Implementation/Assurance columns; no Supported until checklist |
-| F-020 | High | The documented TCB omits native computation | Formal Lead | R-01 | Open | Four-layer TCB rewrite; concrete-module audit |
+| F-020 | High | The documented TCB omits native computation | Formal Lead | R-01 | Addressed | Four-layer TCB; no native decide; concrete-module audit before `verified` |
 
 ## Severity note
 
 Severities follow the post-implementation audit at merge `a9a030e`. Medium findings that are still release-blocking before RC remain tracked here with High/Critical items through F-020.
 
-## R-00 scope
+## R-00 / R-01 scope
 
-This document itself, claims downgrade (F-019), CI `master` push (F-003 partial), and non-vacuous clean-worktree (F-004 partial) are the R-00 deliverables. Do not mark other findings Addressed from R-00 alone.
+R-00: this tracker, claims downgrade (F-019), CI `master` push (F-003 partial), and
+non-vacuous clean-worktree (F-004 partial).
+
+R-01: F-001, F-002, F-020 (kernel-only proofs, concrete axiom audit, leanchecker,
+four-layer TCB). Do not mark other findings Addressed from R-00/R-01 alone.
