@@ -14,6 +14,8 @@ from leanverifier.generator import write_module_atomic
 from leanverifier.manifest import load_model_path, load_request_path, parse_model
 from tests.fixtures.builders import make_model, make_request
 
+pytestmark = pytest.mark.integration
+
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
@@ -31,6 +33,7 @@ def _lake_project_ready(repo: Path) -> bool:
     )
 
 
+@pytest.mark.positive
 def test_positive_validate_and_generate(tmp_path: Path) -> None:
     model = make_model([1, 0], 0)
     # score at [2,0] = 2; eps=1/10; l1=1 → margin ok
@@ -54,6 +57,7 @@ def test_positive_validate_and_generate(tmp_path: Path) -> None:
     assert "experimental" not in text
 
 
+@pytest.mark.negative
 def test_negative_insufficient_margin(tmp_path: Path) -> None:
     model = make_model([1], 0)
     req = make_request(model, [1], "2")  # |1| > 2*1 ? no
@@ -72,6 +76,7 @@ def test_negative_insufficient_margin(tmp_path: Path) -> None:
     assert inspect_bundle(out)["status"] == "not-certified"
 
 
+@pytest.mark.negative
 def test_negative_invalid_model(tmp_path: Path) -> None:
     mp = tmp_path / "model.json"
     rp = tmp_path / "request.json"
@@ -86,6 +91,7 @@ def test_negative_invalid_model(tmp_path: Path) -> None:
     assert inspect_bundle(out)["status"] == "invalid-input"
 
 
+@pytest.mark.positive
 def test_positive_fixture_files() -> None:
     root = Path(__file__).resolve().parents[2]
     model_path = root / "examples" / "affine_binary" / "model.json"
@@ -96,6 +102,8 @@ def test_positive_fixture_files() -> None:
     assert request_path.exists()
 
 
+@pytest.mark.lean
+@pytest.mark.positive
 @pytest.mark.skipif(shutil.which("lake") is None, reason="lake not on PATH")
 def test_generated_example_typechecks(tmp_path: Path) -> None:
     """Generated Fin-pattern vectors must elaborate under the pinned toolchain."""
@@ -118,6 +126,8 @@ def test_generated_example_typechecks(tmp_path: Path) -> None:
     assert proc.returncode == 0, proc.stdout + proc.stderr
 
 
+@pytest.mark.lean
+@pytest.mark.positive
 @pytest.mark.skipif(shutil.which("lake") is None, reason="lake not on PATH")
 def test_positive_verify_evidence_bundle(tmp_path: Path) -> None:
     """Full positive verify path with required evidence bundle (F-005 / F-006)."""

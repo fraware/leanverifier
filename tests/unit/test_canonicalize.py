@@ -11,6 +11,8 @@ from leanverifier.canonicalize import (
 )
 from leanverifier.errors import InvalidInputError
 
+pytestmark = pytest.mark.unit
+
 
 def test_canonicalize_basics() -> None:
     assert canonicalize_rational(Fraction(2, 4)) == "1/2"

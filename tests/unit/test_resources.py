@@ -18,6 +18,8 @@ from leanverifier.resources import (
 )
 from leanverifier.resources.access import recorded_hashes
 
+pytestmark = pytest.mark.unit
+
 
 def test_resource_hashes_verify() -> None:
     hashes = verify_resource_hashes()

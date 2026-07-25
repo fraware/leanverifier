@@ -26,10 +26,10 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Schemas (LV-04) | Implemented; R-03 hardening; packaged under `leanverifier.resources` (R-04) |
 | Generator (LV-05) | Implemented; Fin-pattern vectors; path symlink hardening (R-03); `norm_num` instance proofs (F-001) |
 | CLI (LV-06) | Implemented; required `--output` evidence bundle + `inspect` (R-02); packaged Lean materialize (R-04); concrete axiom audit (R-01) |
-| Adversarial tests (LV-07) | Partial; R-03 security cases added; mutation/matrix remainder (F-013, F-014) in R-05 |
+| Adversarial tests (LV-07) | Mutation table + Hypothesis L∞ invariance + security matrix (R-05) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Four-layer TCB rewritten (F-020 addressed in R-01) |
-| Post-audit remediation (R-00–R-08) | R-00–R-04 integrated on this branch; R-05 in progress |
+| Post-audit remediation (R-00–R-08) | R-00–R-05 on this branch; R-06–R-08 pending |
 | RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
 | Independent review (LV-11) | **Blocked** on external reviewers |
 | v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |

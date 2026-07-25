@@ -12,6 +12,8 @@ from leanverifier.errors import EXIT_DIGEST, EXIT_INVALID, EXIT_NOT_CERTIFIED, E
 from leanverifier.evidence import inspect_bundle
 from tests.fixtures.builders import make_model, make_request
 
+pytestmark = pytest.mark.unit
+
 
 def _write_pair(tmp_path: Path, model: dict, req: dict) -> tuple[Path, Path, Path]:
     mp = tmp_path / "model.json"

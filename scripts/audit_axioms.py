@@ -229,6 +229,28 @@ def audit_library_theorems(repo: Path, errors: list[str]) -> str:
 
 
 def audit_generated_file(repo: Path, generated: Path, errors: list[str]) -> str:
+    # Source-scan the concrete module (custom axiom / sorry / prohibited tactics).
+    single_root_errors: list[str] = []
+    text = generated.read_text(encoding="utf-8")
+    if re.search(r"(?m)^\s*axiom\s+", text):
+        single_root_errors.append(f"custom axiom declaration in {generated}")
+    stripped = re.sub(r"/-.*?-/", "", text, flags=re.S)
+    stripped = re.sub(r"--[^\n]*", "", stripped)
+    if re.search(r"\bsorry\b", stripped):
+        single_root_errors.append(f"sorry in {generated}")
+    if re.search(r"\badmit\b", stripped):
+        single_root_errors.append(f"admit in {generated}")
+    if "Lean.trustCompiler" in stripped:
+        single_root_errors.append(f"Lean.trustCompiler in {generated}")
+    prohibited = re.compile(
+        r"\b" + "native" + r"_decide\b|"
+        r"decide\s+\+" + "native" + r"|"
+        r"\b" + "bv" + r"_decide\b"
+    )
+    if prohibited.search(stripped):
+        single_root_errors.append(f"prohibited decide tactic in {generated}")
+    errors.extend(single_root_errors)
+
     try:
         out = run_generated_axiom_prints(repo, generated)
     except Exception as exc:  # noqa: BLE001
@@ -246,7 +268,11 @@ def audit_generated_file(repo: Path, generated: Path, errors: list[str]) -> str:
                 found = (key, axioms)
                 break
         if found is None:
-            errors.append(f"generated {generated.name}: missing #print axioms output for {local}")
+            # If source already failed, missing prints are secondary.
+            if not single_root_errors:
+                errors.append(
+                    f"generated {generated.name}: missing #print axioms output for {local}"
+                )
             continue
         check_axiom_set(f"{generated.name}:{found[0]}", found[1], errors)
     return out

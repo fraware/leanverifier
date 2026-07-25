@@ -7,6 +7,8 @@ from leanverifier.limits import CODE_RESOURCE_DIMENSION
 from leanverifier.manifest import parse_model, parse_request
 from tests.fixtures.builders import make_model, make_request
 
+pytestmark = pytest.mark.schema
+
 
 def test_model_ok() -> None:
     m = parse_model(make_model([1, "-1/2"], "1/3"))

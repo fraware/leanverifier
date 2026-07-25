@@ -70,6 +70,18 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 addopts = "-q"
 pythonpath = ["src"]
+markers = [
+  "unit: fast pure-Python unit tests",
+  "schema: JSON schema positive/negative tests",
+  "integration: CLI integration flows",
+  "positive: positive-path integration (may require lake)",
+  "negative: negative-path integration",
+  "mutation: audit mutation table via verify/audit/inspect",
+  "security: path/injection/timeout/env hardening",
+  "lean: requires lake + built LeanVerifier oleans",
+  "hypothesis: property-based Hypothesis tests",
+  "slow: long-running or full-matrix jobs",
+]
 
 [tool.coverage.run]
 source = ["src/leanverifier"]

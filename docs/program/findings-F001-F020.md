@@ -2,7 +2,7 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-05 integration: R-01 + R-02 + R-04)
+**Last updated:** 2026-07-25 (R-05 assurance matrix)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
 
@@ -10,9 +10,9 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 |----|----------|-------|-------|-----------|--------|-------|
 | F-001 | Critical | Generated proof escapes the declared axiom policy | Formal Lead | R-01 | Addressed | Generator uses `norm_num`; concrete generated axiom audit before `verified` |
 | F-002 | High | Public model theorems also use native evaluation | Formal Lead | R-01 | Addressed | `repeated_weight_*` proved with `norm_num`; inventoried in PublicAxioms + audit |
-| F-003 | High | CI failed and was bypassed | Build/Release | R-00 / R-05 | Partial | R-00: add `master` push trigger; green Python gates; full job matrix in R-05 |
-| F-004 | Medium | The clean-worktree check is vacuous | Build/Release | R-00 / R-05 | Partial | R-00: lake + pytest + audits + generate outside checkout; full matrix in R-05 |
-| F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Partial | R-02: lake-gated positive verify+inspect; full CI job matrix in R-05 |
+| F-003 | High | CI failed and was bypassed | Build/Release | R-00 / R-05 | Addressed | R-00 triggers + R-05 full job matrix (markers, lean4checker, docker, docs-*) |
+| F-004 | Medium | The clean-worktree check is vacuous | Build/Release | R-00 / R-05 | Addressed | Non-vacuous clean-worktree + assurance matrix jobs |
+| F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Addressed | Positive verify+inspect integration; CI `verify-positive` job |
 | F-006 | High | The CLI destroys the verification evidence | Generator Lead / CLI | R-02 | Addressed | Required `--output` evidence bundle; `inspect` validates checksums |
 | F-007 | High | The wheel is not a functional distribution | Generator Lead | R-04 | Addressed | Schemas + Lean + audit script via `importlib.resources`; hash-checked materialize |
 | F-008 | High | Python dependencies are not reproducibly locked | Build/Release | R-04 | Addressed | Committed `uv.lock`; CI/release use `uv sync --frozen --all-extras` |
@@ -20,12 +20,12 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 | F-010 | Medium | Schemas permit zero-dimensional models | Generator Lead | R-03 | Addressed | `dimension` / `minItems` ≥ 1; no Fin 0 path |
 | F-011 | Medium | Rational strings and input files are insufficiently bounded | Security Reviewer | R-03 | Addressed | Resource limits + stable codes in `limits.py` |
 | F-012 | Medium | Symlink-root rejection is ineffective | Security Reviewer | R-03 | Addressed | `lstat` before `resolve`; CLI no early resolve |
-| F-013 | High | Mutation tests do not test failure behavior | Build/Release | R-05 | Open | Real verify/audit/inspect mutations |
-| F-014 | Medium | Security tests cover only a small subset of the threat model | Security Reviewer | R-03 / R-05 | Partial | R-03: UTF-8, timeout, env, symlink, limits; remainder in R-05 |
+| F-013 | High | Mutation tests do not test failure behavior | Build/Release | R-05 | Addressed | Real verify/audit/inspect mutation table |
+| F-014 | Medium | Security tests cover only a small subset of the threat model | Security Reviewer | R-03 / R-05 | Addressed | R-03 cases + CI `security` / `security-windows`; Hypothesis L∞ invariance |
 | F-015 | High | The release reproduction job performs no reproduction | Build/Release | R-07 | Open | Real reproduce job; no `--skip-lean` for release evidence |
 | F-016 | High | The packaged axiom report is not an axiom report | Build/Release / Formal | R-07 | Open | Full axiom report in RC artifacts |
 | F-017 | Medium | The SBOM is a handwritten inventory scaffold | Build/Release | R-07 | Open | Tool-generated CycloneDX/SPDX |
-| F-018 | Medium | Documentation verification does not execute documentation | Docs / Build | R-05 | Open | `docs-commands` job |
+| F-018 | Medium | Documentation verification does not execute documentation | Docs / Build | R-05 | Addressed | Split `docs-claims` / `docs-links` / `docs-commands` |
 | F-019 | Medium | Claim status is premature | Program lead | R-00 | Addressed | CLAIMS Implementation/Assurance columns; no Supported until checklist |
 | F-020 | High | The documented TCB omits native computation | Formal Lead | R-01 | Addressed | Four-layer TCB; no native decide; concrete-module audit before `verified` |
 

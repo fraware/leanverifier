@@ -126,6 +126,20 @@ def score(weights: list[Fraction], bias: Fraction, x: list[Fraction]) -> Fractio
     return sum((w * xi for w, xi in zip(weights, x, strict=True)), bias)
 
 
+def classify(weights: list[Fraction], bias: Fraction, x: list[Fraction]) -> bool:
+    """Strict positive score classification (matches Lean ``classify``)."""
+    return score(weights, bias, x) > 0
+
+
+def linf_ball(x: list[Fraction], eps: Fraction, y: list[Fraction]) -> bool:
+    """True iff ``y`` lies in the closed L∞ ball of radius ``eps`` around ``x``."""
+    if len(x) != len(y):
+        raise InvalidInputError("dimension mismatch in linf_ball")
+    if eps < 0:
+        raise InvalidInputError("epsilon must be nonnegative")
+    return all(abs(yi - xi) <= eps for xi, yi in zip(x, y, strict=True))
+
+
 def margin_ok(weights: list[Fraction], bias: Fraction, x: list[Fraction], eps: Fraction) -> bool:
     if eps < 0:
         raise InvalidInputError("epsilon must be nonnegative")

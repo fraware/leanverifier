@@ -111,6 +111,7 @@ def smoke_one(
         )
 
     cache = work / "lv-cache"
+    evidence = work / "evidence"
     env = dict(env)
     env["LEANVERIFIER_CACHE"] = str(cache)
     _run(
@@ -121,12 +122,15 @@ def smoke_one(
             str(local_model),
             "--request",
             str(local_request),
+            "--output",
+            str(evidence),
             "--timeout",
             "600",
         ],
         cwd=work,
         env=env,
     )
+    _run([str(cli), "inspect", str(evidence)], cwd=work, env=env)
 
 
 def main() -> int:

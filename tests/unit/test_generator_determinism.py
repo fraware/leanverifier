@@ -2,9 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from leanverifier.generator import render_module, write_module_atomic
 from leanverifier.manifest import parse_model, parse_request
 from tests.fixtures.builders import make_model, make_request
+
+pytestmark = pytest.mark.unit
 
 
 def test_generator_determinism_100(tmp_path: Path, monkeypatch) -> None:  # noqa: ANN001

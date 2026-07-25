@@ -173,6 +173,19 @@ def _run_captured(
     return proc.returncode, _truncate_log((stdout or "") + (stderr or ""))
 
 
+def _run_checked(
+    argv: list[str],
+    *,
+    cwd: Path,
+    timeout: int,
+    failure: type[LeanVerifierError],
+) -> None:
+    """Run a subprocess; raise *failure* on nonzero exit, TimeoutFailureError on expiry."""
+    code, combined = _run_captured(argv, cwd=cwd, timeout=timeout)
+    if code != 0:
+        raise failure(combined)
+
+
 def cmd_validate_model(path: Path) -> int:
     model = load_model_path(path)
     print(json.dumps({"ok": True, "digest": model.digest}, indent=2))

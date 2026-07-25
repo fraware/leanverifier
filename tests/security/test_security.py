@@ -29,6 +29,8 @@ from leanverifier.limits import (
 from leanverifier.manifest import load_model_path, parse_model, parse_request
 from tests.fixtures.builders import make_model, make_request
 
+pytestmark = pytest.mark.security
+
 
 def _can_symlink(tmp_path: Path) -> bool:
     """Return True if this OS/user can create symlinks (Windows often cannot)."""

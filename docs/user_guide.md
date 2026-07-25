@@ -22,8 +22,8 @@ From the repository root (`https://github.com/fraware/leanverifier`):
 lake update
 lake build
 
-# Python CLI
-python -m pip install -e ".[dev]"
+# Python CLI (frozen lockfile)
+uv sync --frozen --all-extras
 ```
 
 Requires Lean `v4.32.0` (see `lean-toolchain`) and Python 3.11+.
@@ -38,14 +38,14 @@ See [model-format.md](model-format.md). Worked example: `examples/affine_binary/
 ## CLI
 
 ```bash
-leanverifier validate-model examples/affine_binary/model.json
-leanverifier validate-request examples/affine_binary/request.json
-leanverifier generate --model examples/affine_binary/model.json \
+uv run leanverifier validate-model examples/affine_binary/model.json
+uv run leanverifier validate-request examples/affine_binary/request.json
+uv run leanverifier generate --model examples/affine_binary/model.json \
   --request examples/affine_binary/request.json --out-dir /tmp/lv-out
-leanverifier verify --model examples/affine_binary/model.json \
+uv run leanverifier verify --model examples/affine_binary/model.json \
   --request examples/affine_binary/request.json \
   --output /tmp/lv-evidence
-leanverifier inspect /tmp/lv-evidence
+uv run leanverifier inspect /tmp/lv-evidence
 ```
 
 `verify` requires `--output`. It builds in an isolated temporary workspace under the pinned toolchain, runs the axiom audit, then writes an immutable evidence bundle (canonical inputs, generated Lean, logs, axiom report, result, checksums) before deleting the temp workspace.
