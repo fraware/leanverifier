@@ -18,13 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
+          enable-cache: true
+      - name: Sync frozen deps
+        run: uv sync --frozen --all-extras
       - name: Build wheel + artifact bundle
         run: |
-          python -m pip install -e ".[dev]" build
-          python -m build
+          uv build
           mkdir -p artifacts
           cp dist/*.whl artifacts/ || true
           bash scripts/package_rc_artifacts.sh artifacts

@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools==75.8.2", "wheel==0.45.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,6 +22,11 @@ dev = [
   "ruff==0.11.2",
   "mypy==1.15.0",
 ]
+build = [
+  "build==1.2.2.post1",
+  "setuptools==75.8.2",
+  "wheel==0.45.1",
+]
 
 [project.scripts]
 leanverifier = "leanverifier.cli:main"
@@ -31,7 +36,17 @@ where = ["src"]
 include = ["leanverifier*"]
 
 [tool.setuptools.package-data]
-leanverifier = ["py.typed"]
+leanverifier = [
+  "py.typed",
+  "resources/hashes.json",
+  "resources/schemas/*.json",
+  "resources/lean-project/lean-toolchain",
+  "resources/lean-project/lakefile.toml",
+  "resources/lean-project/lake-manifest.json",
+  "resources/lean-project/LeanVerifier.lean",
+  "resources/lean-project/LeanVerifier/**/*.lean",
+  "resources/scripts/*.py",
+]
 
 [tool.ruff]
 line-length = 100
@@ -47,6 +62,10 @@ warn_return_any = true
 warn_unused_configs = true
 packages = ["leanverifier"]
 
+[[tool.mypy.overrides]]
+module = ["jsonschema", "jsonschema.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
@@ -55,3 +74,6 @@ pythonpath = ["src"]
 [tool.coverage.run]
 source = ["src/leanverifier"]
 branch = true
+
+[tool.uv]
+package = true

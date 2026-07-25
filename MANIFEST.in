@@ -1,0 +1,3 @@
+# Ensure sdist/wheel include packaged schemas, Lean project, and audit script (F-007).
+recursive-include src/leanverifier/resources *
+global-exclude *.py[cod] __pycache__ .DS_Store

@@ -1,0 +1,16 @@
+name = "leanverifier"
+version = "0.1.0"
+defaultTargets = ["LeanVerifier"]
+# Batteries ships with mathlib; see mathlib4 wiki "Setting up linting".
+lintDriver = "batteries/runLinter"
+lintDriverArgs = ["LeanVerifier"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.32.0"
+
+[[lean_lib]]
+name = "LeanVerifier"
+# Include root LeanVerifier.lean and every LeanVerifier.* submodule.
+globs = ["LeanVerifier", "LeanVerifier.+"]

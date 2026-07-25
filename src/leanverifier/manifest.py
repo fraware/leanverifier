@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from fractions import Fraction
 from pathlib import Path
@@ -24,22 +23,11 @@ from leanverifier.limits import (
     MAX_DIMENSION,
     MAX_MANIFEST_BYTES,
 )
+from leanverifier.resources import load_schema_json
 
-_SCHEMA_DIR = Path(__file__).resolve().parents[2] / "schemas"
-
-
-def _load_schema(name: str) -> dict[str, Any]:
-    path = _SCHEMA_DIR / name
-    with path.open(encoding="utf-8") as f:
-        data = json.load(f)
-    if not isinstance(data, dict):
-        raise InvalidInputError(f"schema root must be object: {name}")
-    return data
-
-
-_MODEL_VALIDATOR = Draft202012Validator(_load_schema("model.schema.json"))
-_REQUEST_VALIDATOR = Draft202012Validator(_load_schema("request.schema.json"))
-_RESULT_VALIDATOR = Draft202012Validator(_load_schema("result.schema.json"))
+_MODEL_VALIDATOR = Draft202012Validator(load_schema_json("model.schema.json"))
+_REQUEST_VALIDATOR = Draft202012Validator(load_schema_json("request.schema.json"))
+_RESULT_VALIDATOR = Draft202012Validator(load_schema_json("result.schema.json"))
 
 
 @dataclass(frozen=True)

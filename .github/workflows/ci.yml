@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["main", "master", "recovery/**", "feature/**", "test/**", "docs/**", "release/**"]
+    branches: ["main", "master", "recovery/**", "feature/**", "test/**", "docs/**", "release/**", "fix/**"]
   pull_request:
     branches: ["main", "master", "recovery/**"]
 
@@ -43,89 +43,118 @@ jobs:
       - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
         with:
           build: true
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
+          enable-cache: true
+      - name: Sync frozen deps
+        run: uv sync --frozen --all-extras
       - name: Run axiom audit
-        run: python scripts/audit_axioms.py
+        run: uv run python scripts/audit_axioms.py
 
   python-unit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - name: Install
-        run: python -m pip install -e ".[dev]"
+          enable-cache: true
+      - name: Sync frozen deps
+        run: uv sync --frozen --all-extras
       - name: Ruff
         run: |
-          ruff check src/leanverifier tests scripts
-          ruff format --check src/leanverifier tests scripts
+          uv run ruff check src/leanverifier tests scripts
+          uv run ruff format --check src/leanverifier tests scripts
       - name: Mypy
-        run: mypy src/leanverifier
+        run: uv run mypy src/leanverifier
       - name: Pytest with coverage
-        run: python -m pytest tests --cov=src/leanverifier --cov-fail-under=70
+        run: uv run python -m pytest tests --cov=src/leanverifier --cov-fail-under=70
 
   schema-negative:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest tests/schema -k negative
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python -m pytest tests/schema -k negative
 
   generator-determinism:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest tests/unit/test_generator_determinism.py
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python -m pytest tests/unit/test_generator_determinism.py
 
   integration-positive:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest tests/integration -k positive
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python -m pytest tests/integration -k positive
 
   integration-negative:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest tests/integration -k 'not positive'
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python -m pytest tests/integration -k 'not positive'
 
   security-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python -m pytest tests/security tests/mutation
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python -m pytest tests/security tests/mutation
 
   documentation:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - run: python -m pip install -e ".[dev]"
-      - run: python scripts/verify_docs.py
+          enable-cache: true
+      - run: uv sync --frozen --all-extras
+      - run: uv run python scripts/verify_docs.py
+
+  wheel-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+      - name: Sync frozen deps
+        run: uv sync --frozen --all-extras
+      - name: Build wheel and sdist
+        run: uv build
+      - name: Smoke install from /tmp (validate-model; verify opt-in)
+        run: |
+          # Packaging smoke: install wheel+sdist in a clean venv outside the checkout.
+          # Full Lake verify requires elan/mathlib — enable with --require-verify in R-05
+          # after lean-action is wired into this job.
+          uv run python scripts/smoke_wheel.py --dist dist --artifact both
 
   clean-worktree:
     runs-on: ubuntu-latest
@@ -137,27 +166,28 @@ jobs:
           build: true
           lint: false
 
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
+          enable-cache: true
 
-      - name: Install Python package
-        run: python -m pip install -e ".[dev]"
+      - name: Sync frozen deps
+        run: uv sync --frozen --all-extras
 
       - name: Pytest (unit + schema subset)
-        run: python -m pytest tests/unit tests/schema -q
+        run: uv run python -m pytest tests/unit tests/schema -q
 
       - name: Axiom audit
-        run: python scripts/audit_axioms.py
+        run: uv run python scripts/audit_axioms.py
 
       - name: Docs verify
-        run: python scripts/verify_docs.py
+        run: uv run python scripts/verify_docs.py
 
       - name: Generate outside checkout
         run: |
           OUT_DIR="${RUNNER_TEMP}/lv-clean-worktree-generate"
           mkdir -p "${OUT_DIR}"
-          leanverifier generate \
+          uv run leanverifier generate \
             --model examples/affine_binary/model.json \
             --request examples/affine_binary/request.json \
             --out-dir "${OUT_DIR}"

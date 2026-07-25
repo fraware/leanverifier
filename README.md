@@ -31,9 +31,9 @@ python scripts/audit_axioms.py
 ### Python package / CLI
 
 ```bash
-python -m pip install -e ".[dev]"
-leanverifier validate-model examples/affine_binary/model.json
-leanverifier verify --model examples/affine_binary/model.json --request examples/affine_binary/request.json
+uv sync --frozen --all-extras
+uv run leanverifier validate-model examples/affine_binary/model.json
+uv run leanverifier verify --model examples/affine_binary/model.json --request examples/affine_binary/request.json
 ```
 
 | Exit | Meaning |
@@ -50,12 +50,14 @@ leanverifier verify --model examples/affine_binary/model.json --request examples
 ## Repository layout
 
 ```
-LeanVerifier/          # Supported Lean library
+LeanVerifier/          # Supported Lean library (checkout; mirrored into the wheel)
 src/leanverifier/      # Supported Python package + CLI
-schemas/               # Canonical JSON schemas
+src/leanverifier/resources/  # Packaged schemas, Lake project, axiom-audit script
+schemas/               # Checkout mirror of packaged JSON schemas
 examples/affine_binary/
 tests/                 # unit, schema, integration, mutation, security
-scripts/               # axiom audit, docs verification, release helpers
+scripts/               # axiom audit, docs verification, wheel smoke, release helpers
+uv.lock                # Frozen Python deps (runtime, dev, build)
 docs/                  # guides + assurance case
 experimental/          # Legacy FormalVerifML — not in supported build
 ```

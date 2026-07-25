@@ -51,9 +51,13 @@ Semantic difference ⇒ different digest. Key reorder ⇒ same digest. Weight re
 
 ## Schemas
 
+Runtime loads schemas from packaged `leanverifier.resources` via `importlib.resources`.
+The checkout `schemas/` tree is a documentation/CI mirror and must match resource hashes
+(`python scripts/regen_resource_hashes.py` after edits).
+
 | File | `schema_version` |
 |------|------------------|
-| `schemas/model.schema.json` | `leanverifier.model.v1` |
+| `schemas/model.schema.json` (packaged twin under `resources/schemas/`) | `leanverifier.model.v1` |
 | `schemas/request.schema.json` | `leanverifier.request.v1` |
 | `schemas/result.schema.json` | `leanverifier.result.v1` |
 

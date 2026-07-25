@@ -17,15 +17,15 @@ Reserve the word **Supported** for claims that pass the release checklist in `do
 | LV-C002 | L∞ ball perturbation bound `\|score(y)-score(x)\| ≤ ε · ‖w‖₁` | Implemented | Internal proof audit passed | `abs_score_sub_score_le` in `Property/ClassificationRobustness.lean` | `ε ≥ 0`; `y` in closed L∞ ball of radius `ε` | Other norms; FP rounding |
 | LV-C003 | Strict margin ⇒ classification invariant on L∞ ball (incl. generated certificate) | Implemented | Axiom audit failed | `affine_margin_robustness` in `Theorem/AffineMarginRobustness.lean`; generator emits instance proofs | `\|score(x)\| > ε · ‖w‖₁`; decision boundary is strict `score > 0` | Equality case (not certified); other classifiers; generated proofs use `native_decide` (F-001) |
 | LV-C004 | Public axiom surface limited to approved builtins | Implemented | Axiom audit failed | `Audit/PublicAxioms.lean`; `scripts/audit_axioms.py` | Lean kernel soundness | Custom axioms; `sorry`; library-only audit omits generated decls and native axioms (F-001/F-020) |
-| LV-C005 | Canonical JSON model/request/result schemas over rational strings | Implemented | Validation incomplete | `schemas/*.schema.json`; `docs/model-format.md`; schema tests | UTF-8; canonical rational grammar | JSON floats; duplicate keys; dim-0 permitted (F-010); wheel does not ship schemas (F-007) |
-| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Implemented | Evidence incomplete | `src/leanverifier/`; CLI exit codes; integration/mutation/security tests | Isolated workspace; pinned toolchain offline after fetch | Web upload path; compiling into checkout; CLI discards evidence bundle (F-006); positive verify path under-tested (F-005) |
+| LV-C005 | Canonical JSON model/request/result schemas over rational strings | Implemented | Validation incomplete | Packaged `leanverifier.resources/schemas`; checkout `schemas/` mirror; `docs/model-format.md`; schema tests | UTF-8; canonical rational grammar | JSON floats; duplicate keys; assurance matrix incomplete (R-05) |
+| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Implemented | Evidence incomplete | `src/leanverifier/`; CLI exit codes; integration/mutation/security tests | Isolated workspace; pinned toolchain offline after fetch | Web upload path; CLI discards evidence bundle (F-006); positive verify path under-tested (F-005) |
 
 ## Distribution and release (not Supported)
 
 | ID | Claim | Implementation state | Assurance state | Notes |
 |----|-------|----------------------|-----------------|-------|
-| LV-D001 | Wheel / sdist installable verification | Implemented | Installability failed | Package data is `py.typed` only; schemas/Lean not on `importlib.resources` (F-007) |
-| LV-D002 | Reproducible release reproduction + attestations | Scaffolded | Unvalidated | `reproduce_release.sh` / `package_rc_artifacts.sh` scaffolding; no live RC (F-015–F-017) |
+| LV-D001 | Wheel / sdist installable verification | Implemented | Validation incomplete | Resources shipped; `scripts/smoke_wheel.py` + CI `wheel-smoke`; full Lake verify still needs elan in CI (R-05) |
+| LV-D002 | Reproducible release reproduction + attestations | Scaffolded | Unvalidated | `reproduce_release.sh` / `package_rc_artifacts.sh` scaffolding; frozen `uv.lock` in R-04; no live RC (F-015–F-017) |
 
 ## Experimental (not supported)
 

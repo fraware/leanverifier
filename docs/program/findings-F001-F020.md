@@ -2,7 +2,7 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-03)
+**Last updated:** 2026-07-25 (R-04)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
 
@@ -14,8 +14,8 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 | F-004 | Medium | The clean-worktree check is vacuous | Build/Release | R-00 / R-05 | Partial | R-00: lake + pytest + audits + generate outside checkout; full matrix in R-05 |
 | F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Open | Positive `verify` + inspect integration |
 | F-006 | High | The CLI destroys the verification evidence | Generator Lead / CLI | R-02 | Open | Required `--output` evidence bundle |
-| F-007 | High | The wheel is not a functional distribution | Generator Lead | R-04 | Open | Package schemas + Lean via `importlib.resources` |
-| F-008 | High | Python dependencies are not reproducibly locked | Build/Release | R-04 | Open | Commit `uv.lock`; frozen CI install |
+| F-007 | High | The wheel is not a functional distribution | Generator Lead | R-04 | Addressed | Schemas + Lean + audit script via `importlib.resources`; hash-checked materialize |
+| F-008 | High | Python dependencies are not reproducibly locked | Build/Release | R-04 | Addressed | Committed `uv.lock`; CI/release use `uv sync --frozen --all-extras` |
 | F-009 | Medium | Canonical rational handling has an approximation defect | Security / Generator | R-03 | Addressed | Exact `Fraction` only; denom > 1e6 tests |
 | F-010 | Medium | Schemas permit zero-dimensional models | Generator Lead | R-03 | Addressed | `dimension` / `minItems` ≥ 1; no Fin 0 path |
 | F-011 | Medium | Rational strings and input files are insufficiently bounded | Security Reviewer | R-03 | Addressed | Resource limits + stable codes in `limits.py` |

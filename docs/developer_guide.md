@@ -4,24 +4,25 @@
 
 | Pin | Location |
 |-----|----------|
-| Lean 4 stable `v4.32.0` | `lean-toolchain` |
+| Python ≥ 3.11 | `pyproject.toml` + committed `uv.lock` (`uv sync --frozen --all-extras`) |
+| Lean 4 stable `v4.32.0` | `lean-toolchain` (checkout) and `src/leanverifier/resources/lean-project/lean-toolchain` (wheel) |
 | mathlib `v4.32.0` | `lakefile.toml` + committed `lake-manifest.json` |
-| Python ≥ 3.11 | `pyproject.toml` (minimal locked deps; install with `pip install -e ".[dev]"`) |
 
-Never use Lean RC toolchains on supported branches. Run all Lean commands from the repository root.
+Never use Lean RC toolchains on supported branches. Run Lake commands from the repository root for development; installed wheels materialize the packaged Lake project into an isolated cache.
 
 ## Layout
 
 | Path | Role |
 |------|------|
-| `LeanVerifier/` | Supported Lean sources |
+| `LeanVerifier/` | Supported Lean sources (checkout; keep in sync with packaged copy) |
 | `LeanVerifier.lean` | Root import (must not import `experimental`) |
 | `src/leanverifier/` | Generator + CLI (src layout; avoids Windows case collision with `LeanVerifier/`) |
-| `schemas/` | JSON Schema (draft 2020-12) |
+| `src/leanverifier/resources/` | Packaged schemas, Lean project, axiom-audit script (`importlib.resources`) |
+| `schemas/` | Checkout mirror of packaged JSON schemas (must match resource hashes) |
 | `examples/affine_binary/` | Canonical worked example |
 | `tests/` | unit / schema / integration / mutation / security |
 | `experimental/` | Legacy FormalVerifML — excluded from supported build |
-| `scripts/` | audits, docs verification, release scaffolding |
+| `scripts/` | audits, docs verification, wheel smoke, release scaffolding |
 | `docs/` | User/developer guides + assurance case |
 
 ## Local checks
@@ -29,13 +30,20 @@ Never use Lean RC toolchains on supported branches. Run all Lean commands from t
 ```bash
 lake build
 lake lint
-python scripts/audit_axioms.py
-python -m pip install -e ".[dev]"
-python -m pytest
-ruff check src/leanverifier tests scripts
-mypy src/leanverifier
-python scripts/verify_docs.py
+uv sync --frozen --all-extras
+uv run python scripts/audit_axioms.py
+uv run python -m pytest
+uv run ruff check src/leanverifier tests scripts
+uv run mypy src/leanverifier
+uv run python scripts/verify_docs.py
+uv build && uv run python scripts/smoke_wheel.py --dist dist
 git status --porcelain   # clean after build when .lake / caches are gitignored
+```
+
+After editing checkout `schemas/` or Lean sources that ship in the wheel, refresh packaged copies and digests:
+
+```bash
+uv run python scripts/regen_resource_hashes.py
 ```
 
 ## Adding formal content

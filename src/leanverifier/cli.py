@@ -34,17 +34,14 @@ from leanverifier.errors import (
 from leanverifier.generator import write_module_atomic
 from leanverifier.limits import CODE_TIMEOUT, MAX_BUILD_LOG_BYTES
 from leanverifier.manifest import load_model_path, load_request_path
+from leanverifier.resources import (
+    materialize_lean_project,
+    read_toolchain,
+    write_axiom_audit_script,
+)
 from leanverifier.result import VerificationResult
 
 DEFAULT_TIMEOUT_S = 600
-
-
-def _repo_root() -> Path:
-    return Path(__file__).resolve().parents[2]
-
-
-def _read_toolchain(repo: Path) -> str:
-    return (repo / "lean-toolchain").read_text(encoding="utf-8").strip()
 
 
 def _strip_env() -> dict[str, str]:
@@ -186,11 +183,10 @@ def _run_lean_file(repo: Path, lean_file: Path, timeout: int) -> None:
     )
 
 
-def _run_axiom_audit(repo: Path, timeout: int) -> None:
-    script = repo / "scripts" / "audit_axioms.py"
+def _run_axiom_audit(lean_root: Path, script: Path, timeout: int) -> None:
     _run_checked(
-        [sys.executable, str(script), "--repo", str(repo)],
-        cwd=repo,
+        [sys.executable, str(script), "--repo", str(lean_root)],
+        cwd=lean_root,
         timeout=timeout,
         failure=AxiomFailureError,
     )
@@ -206,9 +202,15 @@ def cmd_verify(
 
     Status ``verified`` / exit 0 is never returned without a successful Lean
     compile of the generated module and a passing axiom audit.
+
+    The Lake project is materialized from packaged resources into an isolated
+    cache (F-007); the source checkout is not required on PYTHONPATH.
     """
-    repo = _repo_root()
-    toolchain = _read_toolchain(repo)
+    try:
+        toolchain = read_toolchain()
+    except InvalidInputError as exc:
+        print(f"{exc.code}: {exc}", file=sys.stderr)
+        return EXIT_INVALID
     try:
         model = load_model_path(model_path)
         request = load_request_path(request_path)
@@ -250,15 +252,17 @@ def cmd_verify(
 
     workspace = Path(tempfile.mkdtemp(prefix="leanverifier-verify-"))
     try:
+        lean_root = materialize_lean_project()
+        audit_script = write_axiom_audit_script(workspace / "_packaged_scripts")
         lean_path = write_module_atomic(model, request, workspace)
         module_name = lean_path.stem
         started = time.monotonic()
         remaining = timeout
-        _run_lake_build(repo, remaining)
+        _run_lake_build(lean_root, remaining)
         remaining = max(1, timeout - int(time.monotonic() - started))
-        _run_lean_file(repo, lean_path, remaining)
+        _run_lean_file(lean_root, lean_path, remaining)
         remaining = max(1, timeout - int(time.monotonic() - started))
-        _run_axiom_audit(repo, remaining)
+        _run_axiom_audit(lean_root, audit_script, remaining)
         result = VerificationResult(
             status="verified",
             exit_code=EXIT_VERIFIED,
