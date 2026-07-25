@@ -2,7 +2,7 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-05 assurance matrix)
+**Last updated:** 2026-07-25 (R-07 reproducible RC)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
 
@@ -22,9 +22,9 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 | F-012 | Medium | Symlink-root rejection is ineffective | Security Reviewer | R-03 | Addressed | `lstat` before `resolve`; CLI no early resolve |
 | F-013 | High | Mutation tests do not test failure behavior | Build/Release | R-05 | Addressed | Real verify/audit/inspect mutation table |
 | F-014 | Medium | Security tests cover only a small subset of the threat model | Security Reviewer | R-03 / R-05 | Addressed | R-03 cases + CI `security` / `security-windows`; Hypothesis L∞ invariance |
-| F-015 | High | The release reproduction job performs no reproduction | Build/Release | R-07 | Open | Real reproduce job; no `--skip-lean` for release evidence |
-| F-016 | High | The packaged axiom report is not an axiom report | Build/Release / Formal | R-07 | Open | Full axiom report in RC artifacts |
-| F-017 | Medium | The SBOM is a handwritten inventory scaffold | Build/Release | R-07 | Open | Tool-generated CycloneDX/SPDX |
+| F-015 | High | The release reproduction job performs no reproduction | Build/Release | R-07 | Addressed | `reproduce_release.sh` + `release-rc.yml` reproduce job (locks → lake → checker → wheel → verify → byte-compare) |
+| F-016 | High | The packaged axiom report is not an axiom report | Build/Release / Formal | R-07 | Addressed | `package_rc_artifacts.sh` runs full `audit_axioms.py` (library + generated; no `--skip-lean`) |
+| F-017 | Medium | The SBOM is a handwritten inventory scaffold | Build/Release | R-07 | Addressed | Pinned `cyclonedx-bom==7.3.0` via `scripts/generate_sbom.py` + Lean/mathlib enrichment |
 | F-018 | Medium | Documentation verification does not execute documentation | Docs / Build | R-05 | Addressed | Split `docs-claims` / `docs-links` / `docs-commands` |
 | F-019 | Medium | Claim status is premature | Program lead | R-00 | Addressed | CLAIMS Implementation/Assurance columns; no Supported until checklist |
 | F-020 | High | The documented TCB omits native computation | Formal Lead | R-01 | Addressed | Four-layer TCB; no native decide; concrete-module audit before `verified` |

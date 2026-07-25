@@ -4,7 +4,7 @@
 **Status date:** 2026-07-25  
 **Program lead:** Mateo Petel  
 **Repository:** https://github.com/fraware/leanverifier  
-**Working branch:** `chore/r-06-lean-4.32.1` (R-06 on R-05 tip)
+**Working branch:** `release/r-07-reproducible-rc` (R-07 on R-06 tip)
 
 ## Current claim posture
 
@@ -29,8 +29,8 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Adversarial tests (LV-07) | Mutation table + Hypothesis L∞ invariance + security matrix (R-05) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Four-layer TCB rewritten (F-020 addressed in R-01) |
-| Post-audit remediation (R-00–R-08) | R-00–R-06 on this branch; R-07–R-08 pending |
-| RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
+| Post-audit remediation (R-00–R-08) | R-00–R-07 on this branch; R-08 pending |
+| RC release pipeline (LV-10) | Reproducible packaging + reproduce job (R-07); **RC not authorized** until R-08; **no RC tag**; no PyPI publish |
 | Independent review (LV-11) | **Blocked** on external reviewers |
 | v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |
 
@@ -50,4 +50,4 @@ Exit code `0` / status `verified` means the generated Lean module compiled under
 2. GitHub default branch rename `master` → `main` (admin)
 3. Remote branch ruleset + real multi-party CODEOWNERS reviewers (pending handles in `docs/program/admin-actions.md`)
 4. External LV-11 reviewer recruitment and findings resolution
-5. Live GitHub Actions provenance/SBOM attestations only after R-08 authorization — **not before**
+5. RC tag `v0.1.0-rc1`, PyPI publish, and public “released” language only after R-08 authorization — **not before**. R-07 may exercise the attest/reproduce workflow as scaffolding only.

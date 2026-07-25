@@ -27,6 +27,9 @@ build = [
   "setuptools==75.8.2",
   "wheel==0.45.1",
 ]
+release = [
+  "cyclonedx-bom==7.3.0",
+]
 
 [project.scripts]
 leanverifier = "leanverifier.cli:main"

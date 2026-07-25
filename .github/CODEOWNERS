@@ -44,6 +44,7 @@
 /.github/CODEOWNERS @fraware
 /scripts/reproduce_release.sh @fraware
 /scripts/package_rc_artifacts.sh @fraware
+/scripts/generate_sbom.py @fraware
 /docs/release-process.md @fraware
 /Dockerfile @fraware
 

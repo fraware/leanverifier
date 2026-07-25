@@ -18,14 +18,14 @@ Reserve the word **Supported** for claims that pass the release checklist in `do
 | LV-C003 | Strict margin ⇒ classification invariant on L∞ ball (incl. generated certificate) | Implemented | Validation incomplete | `affine_margin_robustness` in `Theorem/AffineMarginRobustness.lean`; generator emits `norm_num` instance proofs; Hypothesis L∞ grid | `\|score(x)\| > ε · ‖w‖₁`; decision boundary is strict `score > 0` | Equality case (not certified); other classifiers |
 | LV-C004 | Public axiom surface limited to approved builtins | Implemented | Validation incomplete | `Audit/PublicAxioms.lean`; `scripts/audit_axioms.py` (library + generated); prohibited-tactic scan; mutation table | Lean kernel soundness; allowlist `{propext, Classical.choice, Quot.sound}` | Custom axioms; `sorry` |
 | LV-C005 | Canonical JSON model/request/result schemas over rational strings | Implemented | Validation incomplete | Packaged `leanverifier.resources/schemas`; checkout `schemas/` mirror; `docs/model-format.md`; schema tests | UTF-8; canonical rational grammar | JSON floats; duplicate keys |
-| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Implemented | Validation incomplete | `src/leanverifier/`; evidence bundle + inspect; integration/mutation/security/docs-commands | Isolated workspace; pinned toolchain offline after fetch; concrete axiom audit before `verified` | Web upload path; RC attestation pending R-07/R-08 |
+| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Implemented | Validation incomplete | `src/leanverifier/`; evidence bundle + inspect; integration/mutation/security/docs-commands | Isolated workspace; pinned toolchain offline after fetch; concrete axiom audit before `verified` | Web upload path; public RC attestation pending R-08 |
 
 ## Distribution and release (not Supported)
 
 | ID | Claim | Implementation state | Assurance state | Notes |
 |----|-------|----------------------|-----------------|-------|
 | LV-D001 | Wheel / sdist installable verification | Implemented | Validation incomplete | Resources shipped; CI `wheel-smoke` with `--require-verify`; Docker formal build |
-| LV-D002 | Reproducible release reproduction + attestations | Scaffolded | Unvalidated | `reproduce_release.sh` / `package_rc_artifacts.sh` scaffolding; frozen `uv.lock` in R-04; no live RC (F-015–F-017) |
+| LV-D002 | Reproducible release reproduction + attestations | Implemented | Validation incomplete | Full axiom report (no `--skip-lean`); pinned `cyclonedx-bom` SBOM; `reproduce_release.sh` end-to-end; `release-rc.yml` attest+reproduce. **RC tag / publish blocked until R-08** |
 
 ## Experimental (not supported)
 
