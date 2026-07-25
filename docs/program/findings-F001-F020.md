@@ -2,9 +2,11 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-07 reproducible RC)
+**Last updated:** 2026-07-25 (R-08 review/authorization scaffolding)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
+
+**RC authorization:** Findings marked Addressed on remediation branches are **not** a release approval. `v0.1.0-rc1` remains blocked until `docs/program/review/release-authorization-checklist.md` is signed (zero Critical/High confirmed, Mediums resolved or Mateo-accepted, three independent reproductions, external formal + security approval, artifacts regenerated after final code change).
 
 | ID | Severity | Title | Owner | Target PR | Status | Notes |
 |----|----------|-------|-------|-----------|--------|-------|
@@ -32,6 +34,23 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 ## Severity note
 
 Severities follow the post-implementation audit at merge `a9a030e`. Medium findings that are still release-blocking before RC remain tracked here with High/Critical items through F-020.
+
+## Campaign branch status (R-00–R-08)
+
+Remediation work landed on branches summarized in `docs/program/r-08-remediation-handoff.md`.
+Integration tip for apply/merge: **R-07** `3377529` (`release/r-07-reproducible-rc`), which contains the R-05+R-06 lineage (R-01/R-02/R-04 already merged into R-05). R-08 adds review packets and the authorization checklist only — **no RC tag**.
+
+| PR | SHA (short) | Branch |
+|----|-------------|--------|
+| R-00 | `f09cc70` | `recovery/r-00-governance-ci` |
+| R-01 | `c93639b` | `fix/r-01-kernel-only-generated-proofs` |
+| R-02 | `cf88065` | `feature/r-02-evidence-bundle` |
+| R-03 | `8e6c846` | `fix/r-03-input-and-path-hardening` |
+| R-04 | `6de2a42` | `fix/r-04-distribution-integrity` |
+| R-05 | `1f1af08` | `test/r-05-assurance-matrix` |
+| R-06 | `2a78730` | `chore/r-06-lean-4.32.1` |
+| R-07 | `3377529` | `release/r-07-reproducible-rc` |
+| R-08 | _(review branch)_ | `review/r-08-release-authorization` |
 
 ## R-00 / R-01 scope
 

@@ -31,8 +31,11 @@ When handles are supplied, replace the placeholders in `.github/CODEOWNERS` and 
 
 ## External (LV-11)
 
-Recruit reviewers using `docs/program/review-invitation.md`. v0.1.0 cannot be authorized without the completed §14 checklist in `docs/release-process.md`.
+Recruit reviewers using `docs/program/review-invitation.md` and assign packets under `docs/program/review/`. Handles remain **TBD** until Mateo supplies them.
+
+v0.1.0-rc1 cannot be authorized without the signed checklist:
+`docs/program/review/release-authorization-checklist.md` (also summarized in `docs/release-process.md` §14).
 
 ## Release attestations
 
-`.github/workflows/release-rc.yml` is scaffolding only. **Do not cut an RC tag** until remediation R-08 authorization. Live GitHub Actions provenance runs only after that gate.
+`.github/workflows/release-rc.yml` is scaffolding only. **Do not cut an RC tag** until the authorization checklist is signed. Live GitHub Actions provenance on a public RC tag runs only after that gate.
