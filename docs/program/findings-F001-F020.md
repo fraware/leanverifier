@@ -2,7 +2,7 @@
 
 **Baseline commit:** `a9a030e4801c567079bef9f1cc91ca78106ead20`  
 **Campaign:** Post-audit remediation R-00–R-08  
-**Last updated:** 2026-07-25 (R-00)
+**Last updated:** 2026-07-25 (R-02)
 
 Owner labels are program roles until real GitHub handles exist (`docs/program/admin-actions.md`). Status values: `Open` | `Partial` | `Addressed` | `Blocked`.
 
@@ -12,8 +12,8 @@ Owner labels are program roles until real GitHub handles exist (`docs/program/ad
 | F-002 | High | Public model theorems also use native evaluation | Formal Lead | R-01 | Open | `repeated_weight_*` theorems |
 | F-003 | High | CI failed and was bypassed | Build/Release | R-00 / R-05 | Partial | R-00: add `master` push trigger; green Python gates; full job matrix in R-05 |
 | F-004 | Medium | The clean-worktree check is vacuous | Build/Release | R-00 / R-05 | Partial | R-00: lake + pytest + audits + generate outside checkout; full matrix in R-05 |
-| F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Open | Positive `verify` + inspect integration |
-| F-006 | High | The CLI destroys the verification evidence | Generator Lead / CLI | R-02 | Open | Required `--output` evidence bundle |
+| F-005 | High | The full positive verification path is not tested | Generator Lead / CLI | R-02 / R-05 | Partial | R-02: lake-gated positive verify+inspect; full CI job matrix in R-05 |
+| F-006 | High | The CLI destroys the verification evidence | Generator Lead / CLI | R-02 | Addressed | Required `--output` evidence bundle; `inspect` validates checksums |
 | F-007 | High | The wheel is not a functional distribution | Generator Lead | R-04 | Open | Package schemas + Lean via `importlib.resources` |
 | F-008 | High | Python dependencies are not reproducibly locked | Build/Release | R-04 | Open | Commit `uv.lock`; frozen CI install |
 | F-009 | Medium | Canonical rational handling has an approximation defect | Security / Generator | R-03 | Open | Remove `limit_denominator()` |

@@ -25,7 +25,7 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | L∞ theorem + axiom audit (LV-03) | Library `#print axioms` path present; generated/native axiom gaps open (F-001, F-020) |
 | Schemas (LV-04) | Implemented; hardening gaps open (F-009–F-011) |
 | Generator (LV-05) | Implemented; Fin-pattern vectors; `native_decide` in templates (F-001) |
-| CLI (LV-06) | Implemented; evidence bundle incomplete (F-006) |
+| CLI (LV-06) | Implemented; required `--output` evidence bundle + `inspect` (R-02) |
 | Adversarial tests (LV-07) | Partial; mutation/security gaps (F-013, F-014) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Present; TCB rewrite pending (F-020) |

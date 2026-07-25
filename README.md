@@ -33,7 +33,8 @@ python scripts/audit_axioms.py
 ```bash
 python -m pip install -e ".[dev]"
 leanverifier validate-model examples/affine_binary/model.json
-leanverifier verify --model examples/affine_binary/model.json --request examples/affine_binary/request.json
+leanverifier verify --model examples/affine_binary/model.json --request examples/affine_binary/request.json --output /tmp/lv-evidence
+leanverifier inspect /tmp/lv-evidence
 ```
 
 | Exit | Meaning |
