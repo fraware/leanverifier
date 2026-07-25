@@ -4,7 +4,7 @@
 **Status date:** 2026-07-25  
 **Program lead:** Mateo Petel  
 **Repository:** https://github.com/fraware/leanverifier  
-**Working branch:** `test/r-05-assurance-matrix` (integrates R-01 + R-02 + R-04)
+**Working branch:** `chore/r-06-lean-4.32.1` (R-06 on R-05 tip)
 
 ## Current claim posture
 
@@ -20,7 +20,7 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 |-------|-------|
 | Truth reset (LV-00) | Complete in working tree |
 | Governance templates | Complete in tree; GitHub `master`→`main` rename + remote ruleset **blocked** (admin) |
-| Build baseline (LV-01) | Lean 4.32.0 + mathlib `v4.32.0` pinned; SHA-pinned CI; Docker elan checksummed |
+| Build baseline (LV-01) | Lean 4.32.1 + mathlib `v4.32.1` pinned; SHA-pinned CI; Docker elan checksummed |
 | Affine kernel (LV-02) | Implemented; repeated-weight unit theorems use `norm_num` (F-002 addressed in R-01) |
 | L∞ theorem + axiom audit (LV-03) | Library + generated `#print axioms` path; leanchecker job (F-001/F-020 addressed in R-01) |
 | Schemas (LV-04) | Implemented; R-03 hardening; packaged under `leanverifier.resources` (R-04) |
@@ -29,7 +29,7 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Adversarial tests (LV-07) | Mutation table + Hypothesis L∞ invariance + security matrix (R-05) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
 | Assurance docs (LV-09) | Four-layer TCB rewritten (F-020 addressed in R-01) |
-| Post-audit remediation (R-00–R-08) | R-00–R-05 on this branch; R-06–R-08 pending |
+| Post-audit remediation (R-00–R-08) | R-00–R-06 on this branch; R-07–R-08 pending |
 | RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
 | Independent review (LV-11) | **Blocked** on external reviewers |
 | v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |

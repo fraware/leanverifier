@@ -26,7 +26,7 @@ lake build
 uv sync --frozen --all-extras
 ```
 
-Requires Lean `v4.32.0` (see `lean-toolchain`) and Python 3.11+.
+Requires Lean `v4.32.1` (see `lean-toolchain`) and Python 3.11+.
 
 ## Inputs
 

@@ -16,7 +16,7 @@ Implementation exists; assurance is incomplete — see [CLAIMS.md](CLAIMS.md) an
 
 ### Prerequisites
 
-- Lean 4 matching [`lean-toolchain`](lean-toolchain) (`leanprover/lean4:v4.32.0`) via [elan](https://github.com/leanprover/elan)
+- Lean 4 matching [`lean-toolchain`](lean-toolchain) (`leanprover/lean4:v4.32.1`) via [elan](https://github.com/leanprover/elan)
 - Python 3.11+ for the generator and CLI
 - Docker (optional) for a Lean-only container build
 

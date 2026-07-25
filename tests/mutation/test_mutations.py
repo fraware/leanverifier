@@ -216,7 +216,7 @@ def test_mutation_unit_evidence_checksum_tamper(tmp_path: Path) -> None:
         exit_code=EXIT_NOT_CERTIFIED,
         model_digest="sha256:" + "a" * 64,
         request_digest="sha256:" + "b" * 64,
-        lean_toolchain="leanprover/lean4:v4.32.0",
+        lean_toolchain="leanprover/lean4:v4.32.1",
         mathlib_revision="unknown",
         generator_version=__version__,
         evidence_bundle_digest="sha256:" + "0" * 64,

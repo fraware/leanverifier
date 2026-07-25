@@ -3,7 +3,7 @@
 LeanVerifier assurance is layered. Removing a layer does not expand what a
 `verified` result means; each layer has a distinct trust boundary.
 
-Pinned toolchain: Lean `v4.32.0` (`lean-toolchain`); mathlib `v4.32.0`
+Pinned toolchain: Lean `v4.32.1` (`lean-toolchain`); mathlib `v4.32.1`
 (`lakefile.toml` / `lake-manifest.json`). Supported proofs use only
 kernel-checkable tactics (no native evaluation decide tactics,
 `decide +native`, or bitvector decide).

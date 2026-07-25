@@ -5,8 +5,8 @@
 | Pin | Location |
 |-----|----------|
 | Python ≥ 3.11 | `pyproject.toml` + committed `uv.lock` (`uv sync --frozen --all-extras`) |
-| Lean 4 stable `v4.32.0` | `lean-toolchain` (checkout) and `src/leanverifier/resources/lean-project/lean-toolchain` (wheel) |
-| mathlib `v4.32.0` | `lakefile.toml` + committed `lake-manifest.json` |
+| Lean 4 stable `v4.32.1` | `lean-toolchain` (checkout) and `src/leanverifier/resources/lean-project/lean-toolchain` (wheel) |
+| mathlib `v4.32.1` | `lakefile.toml` + committed `lake-manifest.json` |
 
 Never use Lean RC toolchains on supported branches. Run Lake commands from the repository root for development; installed wheels materialize the packaged Lake project into an isolated cache.
 

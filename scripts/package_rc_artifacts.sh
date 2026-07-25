@@ -49,8 +49,8 @@ components = [
      "purl": "pkg:generic/leanverifier@0.1.0"},
     {"type": "library", "name": "lean4", "version": toolchain,
      "purl": f"pkg:generic/lean4@{toolchain}"},
-    {"type": "library", "name": "mathlib4", "version": "v4.32.0",
-     "purl": "pkg:github/leanprover-community/mathlib4@v4.32.0"},
+    {"type": "library", "name": "mathlib4", "version": "v4.32.1",
+     "purl": "pkg:github/leanprover-community/mathlib4@v4.32.1"},
     {"type": "library", "name": "jsonschema", "version": "4.23.0",
      "purl": "pkg:pypi/jsonschema@4.23.0"},
 ]

@@ -18,7 +18,7 @@ Reconstruction of LeanVerifier as an exact affine L∞ margin checker.
 
 ### Changed
 
-- Toolchain pinned to Lean / mathlib `v4.32.0`
+- Toolchain pinned to Lean / mathlib `v4.32.1` (see `docs/program/r-06-lean-4.32.1-migration.md`)
 - Active documentation rewritten to the single supported claim; former FormalVerifML marketing withdrawn
 
 ### Removed / quarantined
