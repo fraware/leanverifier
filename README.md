@@ -6,11 +6,11 @@
 
 **v0.1.0 target — not authorized for release.** Read [STATUS.md](STATUS.md), [CLAIMS.md](CLAIMS.md), and [SECURITY.md](SECURITY.md) before use.
 
-## Supported claim (only)
+## Formal claim under validation (not Supported)
 
 Given a dimensionally valid affine binary classifier over exact rationals ℚ, a reference input \(x\), and a nonnegative L∞ radius \(\varepsilon\), if the absolute score margin strictly exceeds \(\varepsilon \cdot \|w\|_1\), then the classification sign (strictly positive score) is invariant on the closed L∞ ball of radius \(\varepsilon\) around \(x\).
 
-This is **not** a general ML verification product. Neural nets, transformers, vision models, SMT automation, distributed or enterprise features, and the legacy web upload path are unsupported historical material under [`experimental/legacy-formalverifml/`](experimental/legacy-formalverifml/).
+Implementation exists; assurance is incomplete — see [CLAIMS.md](CLAIMS.md) and [STATUS.md](STATUS.md). This is **not** a general ML verification product. Neural nets, transformers, vision models, SMT automation, distributed or enterprise features, and the legacy web upload path are unsupported historical material under [`experimental/legacy-formalverifml/`](experimental/legacy-formalverifml/).
 
 ## Quick start
 
@@ -67,7 +67,7 @@ Supported Lake targets must not import `experimental/`.
 | Doc | Purpose |
 |-----|---------|
 | [STATUS.md](STATUS.md) | Program status and blockers |
-| [CLAIMS.md](CLAIMS.md) | Supported / experimental / planned / rejected claims |
+| [CLAIMS.md](CLAIMS.md) | Implementation / assurance state for public claims |
 | [SECURITY.md](SECURITY.md) | Supported surface and legacy web quarantine |
 | [CHANGELOG.md](CHANGELOG.md) | Release notes |
 | [docs/user_guide.md](docs/user_guide.md) | Operator guide |

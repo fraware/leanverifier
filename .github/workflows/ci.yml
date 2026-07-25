@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: ["main", "recovery/**", "feature/**", "test/**", "docs/**", "release/**"]
+    branches: ["main", "master", "recovery/**", "feature/**", "test/**", "docs/**", "release/**"]
   pull_request:
     branches: ["main", "master", "recovery/**"]
 
@@ -59,11 +59,13 @@ jobs:
       - name: Install
         run: python -m pip install -e ".[dev]"
       - name: Ruff
-        run: ruff check src/leanverifier tests scripts
+        run: |
+          ruff check src/leanverifier tests scripts
+          ruff format --check src/leanverifier tests scripts
       - name: Mypy
         run: mypy src/leanverifier
-      - name: Unit + schema
-        run: python -m pytest tests/unit tests/schema --cov=src/leanverifier --cov-fail-under=70
+      - name: Pytest with coverage
+        run: python -m pytest tests --cov=src/leanverifier --cov-fail-under=70
 
   schema-negative:
     runs-on: ubuntu-latest
@@ -129,5 +131,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Porcelain empty after checkout
+
+      - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          build: true
+          lint: false
+
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.11"
+
+      - name: Install Python package
+        run: python -m pip install -e ".[dev]"
+
+      - name: Pytest (unit + schema subset)
+        run: python -m pytest tests/unit tests/schema -q
+
+      - name: Axiom audit
+        run: python scripts/audit_axioms.py
+
+      - name: Docs verify
+        run: python scripts/verify_docs.py
+
+      - name: Generate outside checkout
+        run: |
+          OUT_DIR="${RUNNER_TEMP}/lv-clean-worktree-generate"
+          mkdir -p "${OUT_DIR}"
+          leanverifier generate \
+            --model examples/affine_binary/model.json \
+            --request examples/affine_binary/request.json \
+            --out-dir "${OUT_DIR}"
+
+      - name: Worktree remains clean
         run: test -z "$(git status --porcelain)"

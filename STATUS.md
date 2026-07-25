@@ -1,16 +1,16 @@
 # LeanVerifier Status
 
 **Version target:** v0.1.0 technical preview  
-**Status date:** 2026-07-24  
+**Status date:** 2026-07-25  
 **Program lead:** Mateo Petel  
 **Repository:** https://github.com/fraware/leanverifier  
-**Working branch:** `recovery/v0.1.0`
+**Working branch:** `recovery/r-00-governance-ci` (post-audit remediation R-00)
 
 ## Current claim posture
 
-LeanVerifier is under reconstruction. The **only** supported formal claim for v0.1.0 is:
+LeanVerifier is a **research implementation under validation**. It is **not** released, **not** independently validated, and **not** authorized for an RC tag or package publish.
 
-> Given a dimensionally valid affine binary classifier over exact rationals, a reference input, and a nonnegative L∞ radius ε, if the absolute score margin strictly exceeds ε · ‖w‖₁, then the classification sign is invariant on the closed L∞ ball.
+The formal kernel implements exact rational affine binary classification with an L∞ margin-robustness theorem. Implementation of LV-C001–C006 exists in-tree; **assurance is incomplete or failed** for several of those claims (see `CLAIMS.md` Implementation / Assurance columns). Do not describe any LV-C* claim as Supported until the release checklist in `docs/release-process.md` passes after remediation R-00–R-08.
 
 Everything else formerly advertised under FormalVerifML (neural nets, transformers, vision, SMT, distributed/enterprise web verification, PyTorch equivalence, floating-point correctness) is **unsupported** and lives under `experimental/legacy-formalverifml/` for historical reference only.
 
@@ -21,31 +21,33 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Truth reset (LV-00) | Complete in working tree |
 | Governance templates | Complete in tree; GitHub `master`→`main` rename + remote ruleset **blocked** (admin) |
 | Build baseline (LV-01) | Lean 4.32.0 + mathlib `v4.32.0` pinned; SHA-pinned CI; Docker elan checksummed |
-| Affine kernel (LV-02) | Complete |
-| L∞ theorem + axiom audit (LV-03) | Complete; `#print axioms` = `propext`, `Classical.choice`, `Quot.sound` only |
-| Schemas (LV-04) | Complete |
-| Generator (LV-05) | Complete; Fin-pattern vectors (no bang indexing) |
-| CLI (LV-06) | Complete; example `leanverifier verify` → `verified` / exit 0 |
-| Adversarial tests (LV-07) | Complete (`pytest tests`) |
+| Affine kernel (LV-02) | Implemented; assurance incomplete (F-002) |
+| L∞ theorem + axiom audit (LV-03) | Library `#print axioms` path present; generated/native axiom gaps open (F-001, F-020) |
+| Schemas (LV-04) | Implemented; hardening gaps open (F-009–F-011) |
+| Generator (LV-05) | Implemented; Fin-pattern vectors; `native_decide` in templates (F-001) |
+| CLI (LV-06) | Implemented; evidence bundle incomplete (F-006) |
+| Adversarial tests (LV-07) | Partial; mutation/security gaps (F-013, F-014) |
 | Legacy isolation (LV-08) | Complete under `experimental/` |
-| Assurance docs (LV-09) | Complete |
-| RC release pipeline (LV-10) | Scaffolding in tree; **live attestations blocked** until RC tag on GitHub Actions |
+| Assurance docs (LV-09) | Present; TCB rewrite pending (F-020) |
+| Post-audit remediation (R-00–R-08) | R-00 in progress; R-01–R-08 not done |
+| RC release pipeline (LV-10) | Scaffolding only; **no RC tag**; live attestations blocked |
 | Independent review (LV-11) | **Blocked** on external reviewers |
-| v0.1.0 authorization | **Not authorized** until §14 checklist in `docs/release-process.md` passes |
+| v0.1.0 authorization | **Not authorized** — do not tag, publish, or promote |
 
 ## Security posture
 
 - The legacy web upload → translator → `lake build` path is **quarantined** and must not be exposed.
-- Supported verification uses an isolated temp workspace and a deterministic generator with path containment.
+- Supported verification uses an isolated temp workspace and a deterministic generator with path containment (further hardening in R-03).
 - See [SECURITY.md](SECURITY.md).
 
-## What “verified” means
+## What “verified” means (today)
 
-Exit code `0` / status `verified` means only that the generated Lean module compiled under the pinned toolchain and the axiom audit passed for the concrete margin instance of the supported theorem. It does **not** mean model correctness in floating point, deployment readiness, or any property outside the L∞ margin statement.
+Exit code `0` / status `verified` means only that the generated Lean module compiled under the pinned toolchain and the current axiom audit script passed for the concrete margin instance. That path still has known assurance gaps (native axioms, discarded evidence, incomplete positive tests). It does **not** mean model correctness in floating point, deployment readiness, Supported status, or any property outside the L∞ margin statement.
 
 ## Blockers (do not fabricate completion)
 
-1. GitHub default branch rename `master` → `main` (admin)
-2. Remote branch ruleset + real multi-party CODEOWNERS reviewers
-3. External LV-11 reviewer recruitment and findings resolution
-4. Live GitHub Actions provenance/SBOM attestations for an RC tag
+1. Close Critical/High audit findings F-001–F-020 via R-00–R-08 (tracker: `docs/program/findings-F001-F020.md`)
+2. GitHub default branch rename `master` → `main` (admin)
+3. Remote branch ruleset + real multi-party CODEOWNERS reviewers (pending handles in `docs/program/admin-actions.md`)
+4. External LV-11 reviewer recruitment and findings resolution
+5. Live GitHub Actions provenance/SBOM attestations only after R-08 authorization — **not before**

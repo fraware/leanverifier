@@ -120,9 +120,7 @@ def main() -> int:
                 if bad in out and "forbidden" not in out:
                     # 'sorry' may appear in help text; check axiom lists specifically
                     axioms = parse_axioms(out)
-                    if any(bad in a for a in axioms) or (
-                        bad in out and "depends on axioms" in out
-                    ):
+                    if any(bad in a for a in axioms) or (bad in out and "depends on axioms" in out):
                         errors.append(f"{thm}: forbidden axiom material ({bad})")
             axioms = parse_axioms(out)
             extra = axioms - ALLOWED

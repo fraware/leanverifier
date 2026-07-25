@@ -102,7 +102,9 @@ def main() -> int:
 
     # Supported Lean must not import experimental (real import lines only)
     import_experimental = re.compile(r"(?m)^\s*import\s+.*experimental")
-    lean_files = list((ROOT / "LeanVerifier").rglob("*.lean")) if (ROOT / "LeanVerifier").is_dir() else []
+    lean_files = (
+        list((ROOT / "LeanVerifier").rglob("*.lean")) if (ROOT / "LeanVerifier").is_dir() else []
+    )
     root_lean = ROOT / "LeanVerifier.lean"
     if root_lean.exists():
         lean_files.append(root_lean)

@@ -1,35 +1,48 @@
 # LeanVerifier Claims Register
 
 Every public capability mentioned in active documentation must appear here.
-Statuses: **Supported** | **Experimental** | **Planned** | **Rejected**.
 
-## Supported (v0.1.0 technical preview)
+**Status vocabulary**
 
-| ID | Claim | Status | Evidence | Assumptions | Negative evidence |
-|----|-------|--------|----------|-------------|-------------------|
-| LV-C001 | Exact rational affine binary classifier (`score` / `classify`) | Supported | `LeanVerifier/Model/AffineBinary.lean`; unit theorems incl. repeated weights | Exact ℚ arithmetic; dimension `n` matches weights/input | Float arrays; silent zip truncate; bang indexing |
-| LV-C002 | L∞ ball perturbation bound `\|score(y)-score(x)\| ≤ ε · ‖w‖₁` | Supported | `abs_score_sub_score_le` in `Property/ClassificationRobustness.lean` | `ε ≥ 0`; `y` in closed L∞ ball of radius `ε` | Other norms; FP rounding |
-| LV-C003 | Strict margin ⇒ classification invariant on L∞ ball | Supported | `affine_margin_robustness` in `Theorem/AffineMarginRobustness.lean` | `\|score(x)\| > ε · ‖w‖₁`; decision boundary is strict `score > 0` | Equality case (not certified); other classifiers |
-| LV-C004 | Public axiom surface limited to approved builtins | Supported | `Audit/PublicAxioms.lean`; `scripts/audit_axioms.py` | Lean kernel soundness | Custom axioms; `sorry`; `Lean.trustCompiler` |
-| LV-C005 | Canonical JSON model/request/result schemas over rational strings | Supported | `schemas/*.schema.json`; `docs/model-format.md`; schema tests | UTF-8; canonical rational grammar | JSON floats; duplicate keys |
-| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Supported | `src/leanverifier/`; CLI exit codes; integration/mutation/security tests | Isolated workspace; pinned toolchain offline after fetch | Web upload path; compiling into checkout |
+- **Implementation state:** `Implemented` | `Scaffolded` | `Experimental` | `Planned` | `Rejected`
+- **Assurance state:** evidence quality only — `Internal proof audit passed` | `Validation incomplete` | `Axiom audit failed` | `Evidence incomplete` | `Installability failed` | `Unvalidated` | `Not applicable`
+
+Reserve the word **Supported** for claims that pass the release checklist in `docs/release-process.md`. No LV-C* claim is Supported until remediation R-00–R-08 and independent review complete. Public posture: research implementation under validation (see `STATUS.md`).
+
+## Core claims (v0.1.0 technical preview — not Supported)
+
+| ID | Claim | Implementation state | Assurance state | Evidence | Assumptions | Negative evidence |
+|----|-------|----------------------|-----------------|----------|-------------|-------------------|
+| LV-C001 | Exact rational affine binary classifier (`score` / `classify`) | Implemented | Validation incomplete | `LeanVerifier/Model/AffineBinary.lean`; unit theorems incl. repeated weights | Exact ℚ arithmetic; dimension `n` matches weights/input | Float arrays; silent zip truncate; bang indexing; repeated-weight theorems rely on `native_decide` (F-002) |
+| LV-C002 | L∞ ball perturbation bound `\|score(y)-score(x)\| ≤ ε · ‖w‖₁` | Implemented | Internal proof audit passed | `abs_score_sub_score_le` in `Property/ClassificationRobustness.lean` | `ε ≥ 0`; `y` in closed L∞ ball of radius `ε` | Other norms; FP rounding |
+| LV-C003 | Strict margin ⇒ classification invariant on L∞ ball (incl. generated certificate) | Implemented | Axiom audit failed | `affine_margin_robustness` in `Theorem/AffineMarginRobustness.lean`; generator emits instance proofs | `\|score(x)\| > ε · ‖w‖₁`; decision boundary is strict `score > 0` | Equality case (not certified); other classifiers; generated proofs use `native_decide` (F-001) |
+| LV-C004 | Public axiom surface limited to approved builtins | Implemented | Axiom audit failed | `Audit/PublicAxioms.lean`; `scripts/audit_axioms.py` | Lean kernel soundness | Custom axioms; `sorry`; library-only audit omits generated decls and native axioms (F-001/F-020) |
+| LV-C005 | Canonical JSON model/request/result schemas over rational strings | Implemented | Validation incomplete | `schemas/*.schema.json`; `docs/model-format.md`; schema tests | UTF-8; canonical rational grammar | JSON floats; duplicate keys; dim-0 permitted (F-010); wheel does not ship schemas (F-007) |
+| LV-C006 | Deterministic safe Lean generation + CLI verify semantics | Implemented | Evidence incomplete | `src/leanverifier/`; CLI exit codes; integration/mutation/security tests | Isolated workspace; pinned toolchain offline after fetch | Web upload path; compiling into checkout; CLI discards evidence bundle (F-006); positive verify path under-tested (F-005) |
+
+## Distribution and release (not Supported)
+
+| ID | Claim | Implementation state | Assurance state | Notes |
+|----|-------|----------------------|-----------------|-------|
+| LV-D001 | Wheel / sdist installable verification | Implemented | Installability failed | Package data is `py.typed` only; schemas/Lean not on `importlib.resources` (F-007) |
+| LV-D002 | Reproducible release reproduction + attestations | Scaffolded | Unvalidated | `reproduce_release.sh` / `package_rc_artifacts.sh` scaffolding; no live RC (F-015–F-017) |
 
 ## Experimental (not supported)
 
-| ID | Claim | Status | Location |
-|----|-------|--------|----------|
-| LV-X001 | Neural / transformer / vision formalizations | Experimental | `experimental/legacy-formalverifml/lean/` |
-| LV-X002 | SMT automation integration | Experimental | legacy `smt_integration.lean` |
-| LV-X003 | Distributed / enterprise verification stubs | Experimental | legacy enterprise modules |
-| LV-X004 | Flask web upload → `lake build` | Experimental / quarantined | `experimental/legacy-formalverifml/webapp/` — **do not expose** |
-| LV-X005 | PyTorch / HuggingFace export translators | Experimental | `experimental/legacy-formalverifml/translator/` |
+| ID | Claim | Implementation state | Assurance state | Location |
+|----|-------|----------------------|-----------------|----------|
+| LV-X001 | Neural / transformer / vision formalizations | Experimental | Not applicable | `experimental/legacy-formalverifml/lean/` |
+| LV-X002 | SMT automation integration | Experimental | Not applicable | legacy `smt_integration.lean` |
+| LV-X003 | Distributed / enterprise verification stubs | Experimental | Not applicable | legacy enterprise modules |
+| LV-X004 | Flask web upload → `lake build` | Experimental | Not applicable | `experimental/legacy-formalverifml/webapp/` — **do not expose** |
+| LV-X005 | PyTorch / HuggingFace export translators | Experimental | Not applicable | `experimental/legacy-formalverifml/translator/` |
 
 ## Planned
 
-| ID | Claim | Status |
-|----|-------|--------|
-| LV-P001 | Additional norms / multi-class affine margins | Planned |
-| LV-P002 | Independent attestation-backed binary releases beyond RC scaffolding | Planned (LV-10/11) |
+| ID | Claim | Implementation state | Assurance state |
+|----|-------|----------------------|-----------------|
+| LV-P001 | Additional norms / multi-class affine margins | Planned | Unvalidated |
+| LV-P002 | Independent attestation-backed binary releases beyond RC scaffolding | Planned (LV-10/11) | Unvalidated |
 
 ## Rejected / withdrawn
 

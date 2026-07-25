@@ -32,9 +32,7 @@ def _lean_vec(values: list[Fraction]) -> str:
     if not values:
         return "(fun (_ : Fin 0) => (0 : Rat))"
     n = len(values)
-    arms = "\n".join(
-        f"    | ⟨{i}, _⟩ => {_lean_rat(v)}" for i, v in enumerate(values)
-    )
+    arms = "\n".join(f"    | ⟨{i}, _⟩ => {_lean_rat(v)}" for i, v in enumerate(values))
     return f"(fun (i : Fin {n}) =>\n  match i with\n{arms})"
 
 
