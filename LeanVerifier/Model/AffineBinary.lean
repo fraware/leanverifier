@@ -1,10 +1,14 @@
 import LeanVerifier.Data.Vector
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Tactic.NormNum
 
 /-!
 # Affine binary classifier over exact rationals
 
 `score` and `classify` are total and shape-checked by construction via `Fin n`.
+
+Score equalities use kernel-checkable `norm_num`. Classify reductions rewrite to a
+score equality then close with kernel `decide` (never native evaluation decide tactics).
 -/
 
 namespace LeanVerifier
@@ -56,23 +60,30 @@ def repeatedWeightInputOnes : Vec 3 := fun _ => 1
 def repeatedWeightInputFocus : Vec 3 :=
   fun
   | ⟨0, _⟩ => 2
-  | _ => 0
+  | ⟨1, _⟩ => 0
+  | ⟨2, _⟩ => 0
 
 theorem repeated_weight_score_ones :
     score repeatedWeightModel repeatedWeightInputOnes = 0 := by
-  native_decide
+  simp [score, repeatedWeightModel, repeatedWeightInputOnes, Fin.sum_univ_three]
+  try norm_num
 
 theorem repeated_weight_classify_ones :
     classify repeatedWeightModel repeatedWeightInputOnes = false := by
-  native_decide
+  change decide (0 < score repeatedWeightModel repeatedWeightInputOnes) = false
+  rw [repeated_weight_score_ones]
+  decide
 
 theorem repeated_weight_score_focus :
     score repeatedWeightModel repeatedWeightInputFocus = 2 := by
-  native_decide
+  simp [score, repeatedWeightModel, repeatedWeightInputFocus, Fin.sum_univ_three]
+  try norm_num
 
 theorem repeated_weight_classify_focus :
     classify repeatedWeightModel repeatedWeightInputFocus = true := by
-  native_decide
+  change decide (0 < score repeatedWeightModel repeatedWeightInputFocus) = true
+  rw [repeated_weight_score_focus]
+  decide
 
 theorem classify_iff_pos_score (M : AffineBinaryClassifier n) (x : Vec n) :
     classify M x = true ↔ 0 < score M x := by
