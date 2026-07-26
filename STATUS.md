@@ -19,7 +19,7 @@ Everything else formerly advertised under FormalVerifML (neural nets, transforme
 | Stage | State |
 |-------|-------|
 | Truth reset (LV-00) | Complete in working tree |
-| Governance templates | Complete in tree; GitHub `master`→`main` rename + remote ruleset **blocked** (admin) |
+| Governance templates | Complete in tree; default branch is **`main`**; remote ruleset still **blocked** (admin / CODEOWNERS) |
 | Build baseline (LV-01) | Lean 4.32.1 + mathlib `v4.32.1` pinned; SHA-pinned CI; Docker elan checksummed |
 | Affine kernel (LV-02) | Implemented; repeated-weight score equalities via `norm_num`; classify via kernel `decide` after rewrite (F-002; no `native_decide`) |
 | L∞ theorem + axiom audit (LV-03) | Library + generated `#print axioms` path; leanchecker job (F-001/F-020 addressed in R-01) |
@@ -73,8 +73,7 @@ Exit code `0` / status `verified` means the generated Lean module compiled under
 ## Blockers (do not fabricate completion)
 
 1. Mateo confirmation that Critical/High are closed on the integration tip; Mediums resolved or explicitly accepted (`docs/program/findings-F001-F020.md` + authorization checklist)
-2. GitHub default branch rename `master` → `main` (admin)
-3. Remote branch ruleset + real multi-party CODEOWNERS reviewers (pending handles in `docs/program/admin-actions.md`)
-4. External LV-11 reviewer recruitment, packet completion, and findings resolution
-5. Three independent reproductions + artifacts regenerated after final code change
-6. RC tag `v0.1.0-rc1`, PyPI publish, and public “released” language **only** after the signed checklist — **not before**
+2. Remote branch ruleset + real multi-party CODEOWNERS reviewers (pending handles in `docs/program/admin-actions.md`)
+3. External LV-11 reviewer recruitment, packet completion, and findings resolution
+4. Three independent reproductions + artifacts regenerated after final code change
+5. RC tag `v0.1.0-rc1`, PyPI publish, and public “released” language **only** after the signed checklist — **not before**

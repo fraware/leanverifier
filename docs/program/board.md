@@ -5,7 +5,7 @@
 | ID | Title | Owner | Status | Blocker |
 |----|-------|-------|--------|---------|
 | LV-00 | Truth reset | Mateo | done (in tree) | |
-| gov-main | Rename + ruleset + CODEOWNERS | Mateo / admin | templates done | GitHub rename + remote ruleset |
+| gov-main | Rename + ruleset + CODEOWNERS | Mateo / admin | default branch `main` done | Remote ruleset + real CODEOWNERS handles |
 | LV-01 | Build baseline | Mateo | done (in tree) | Local Lean reinstall may need SSL workaround |
 | LV-02 | Affine kernel | Mateo | done | |
 | LV-03 | Margin robustness | Mateo | done | Formal reviewer sign-off pending |
@@ -21,7 +21,7 @@
 
 ## Admin actions (GitHub)
 
-- [ ] Rename default branch `master` → `main` (requires admin)
-- [ ] Set `origin/HEAD` to `main`
+- [x] Rename default branch `master` → `main`
+- [x] Set `origin/HEAD` to `main`
 - [ ] Activate branch ruleset on `main` (required reviews, CODEOWNERS, no force-push)
 - [ ] Confirm CODEOWNERS usernames include non-implementer formal + security reviewers
