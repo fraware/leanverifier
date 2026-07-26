@@ -37,8 +37,13 @@ def _read_text(relative: str) -> str:
     return _read_bytes(relative).decode("utf-8")
 
 
+def _canonical_bytes(data: bytes) -> bytes:
+    """Normalize newlines to LF so digests match regen_resource_hashes.py."""
+    return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
+
 def _sha256_digest(data: bytes) -> str:
-    return "sha256:" + hashlib.sha256(data).hexdigest()
+    return "sha256:" + hashlib.sha256(_canonical_bytes(data)).hexdigest()
 
 
 def recorded_hashes() -> dict[str, str]:
@@ -136,7 +141,7 @@ def materialize_lean_project(*, cache_root: Path | None = None) -> Path:
             rel_path = relative[len(_LEAN_PREFIX) :]
             target = tmp / rel_path
             target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_bytes(data)
+            target.write_bytes(_canonical_bytes(data))
         (tmp / ".leanverifier-resources-ok").write_text(digest + "\n", encoding="utf-8")
         if dest.exists():
             shutil.rmtree(dest)
@@ -162,5 +167,5 @@ def write_axiom_audit_script(dest_dir: Path) -> Path:
         )
     dest_dir.mkdir(parents=True, exist_ok=True)
     path = dest_dir / "generated_axiom_audit.py"
-    path.write_bytes(data)
+    path.write_bytes(_canonical_bytes(data))
     return path

@@ -57,6 +57,12 @@ def test_write_axiom_audit_script(tmp_path: Path) -> None:
     assert "AXIOM AUDIT" in text or "Allowed" in text
 
 
+def _lf_sha256(data: bytes) -> str:
+    """Match scripts/regen_resource_hashes.py canonical digests."""
+    canonical = data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    return "sha256:" + hashlib.sha256(canonical).hexdigest()
+
+
 def test_checkout_schema_mirrors_match_packaged() -> None:
     """When running from a source checkout, top-level schemas/ must match package."""
     checkout = Path(__file__).resolve().parents[2]
@@ -66,8 +72,7 @@ def test_checkout_schema_mirrors_match_packaged() -> None:
     hashes = recorded_hashes()
     for name in ("model.schema.json", "request.schema.json", "result.schema.json"):
         data = (schemas / name).read_bytes()
-        digest = "sha256:" + hashlib.sha256(data).hexdigest()
-        assert hashes[f"schemas/{name}"] == digest
+        assert hashes[f"schemas/{name}"] == _lf_sha256(data)
 
 
 def test_checkout_lean_mirrors_match_packaged() -> None:
@@ -82,14 +87,11 @@ def test_checkout_lean_mirrors_match_packaged() -> None:
         "lean-project/LeanVerifier.lean": checkout / "LeanVerifier.lean",
     }
     for key, path in mapping.items():
-        digest = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
-        assert hashes[key] == digest
+        assert hashes[key] == _lf_sha256(path.read_bytes())
     for lean in (checkout / "LeanVerifier").rglob("*.lean"):
         rel = lean.relative_to(checkout).as_posix()
         key = f"lean-project/{rel}"
-        digest = "sha256:" + hashlib.sha256(lean.read_bytes()).hexdigest()
-        assert hashes[key] == digest
-
+        assert hashes[key] == _lf_sha256(lean.read_bytes())
 
 def test_hashes_json_is_sorted_object() -> None:
     raw = json.loads(

@@ -46,6 +46,8 @@ After editing checkout `schemas/` or Lean sources that ship in the wheel, refres
 uv run python scripts/regen_resource_hashes.py
 ```
 
+Digests are LF-canonical (see `.gitattributes`). Always regenerate on the machine that edited the files; do not hand-edit `hashes.json`.
+
 ## Adding formal content
 
 1. Keep definitions exact over ℚ; no `Array Float`, bang indexing, `getD`, or silent zip truncate.
