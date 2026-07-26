@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools==75.8.2", "wheel==0.45.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -22,6 +22,14 @@ dev = [
   "ruff==0.11.2",
   "mypy==1.15.0",
 ]
+build = [
+  "build==1.2.2.post1",
+  "setuptools==75.8.2",
+  "wheel==0.45.1",
+]
+release = [
+  "cyclonedx-bom==7.3.0",
+]
 
 [project.scripts]
 leanverifier = "leanverifier.cli:main"
@@ -31,7 +39,17 @@ where = ["src"]
 include = ["leanverifier*"]
 
 [tool.setuptools.package-data]
-leanverifier = ["py.typed"]
+leanverifier = [
+  "py.typed",
+  "resources/hashes.json",
+  "resources/schemas/*.json",
+  "resources/lean-project/lean-toolchain",
+  "resources/lean-project/lakefile.toml",
+  "resources/lean-project/lake-manifest.json",
+  "resources/lean-project/LeanVerifier.lean",
+  "resources/lean-project/LeanVerifier/**/*.lean",
+  "resources/scripts/*.py",
+]
 
 [tool.ruff]
 line-length = 100
@@ -47,11 +65,30 @@ warn_return_any = true
 warn_unused_configs = true
 packages = ["leanverifier"]
 
+[[tool.mypy.overrides]]
+module = ["jsonschema", "jsonschema.*"]
+ignore_missing_imports = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
 pythonpath = ["src"]
+markers = [
+  "unit: fast pure-Python unit tests",
+  "schema: JSON schema positive/negative tests",
+  "integration: CLI integration flows",
+  "positive: positive-path integration (may require lake)",
+  "negative: negative-path integration",
+  "mutation: audit mutation table via verify/audit/inspect",
+  "security: path/injection/timeout/env hardening",
+  "lean: requires lake + built LeanVerifier oleans",
+  "hypothesis: property-based Hypothesis tests",
+  "slow: long-running or full-matrix jobs",
+]
 
 [tool.coverage.run]
 source = ["src/leanverifier"]
 branch = true
+
+[tool.uv]
+package = true
