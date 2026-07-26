@@ -117,7 +117,13 @@ jobs:
       - name: Mypy
         run: uv run mypy src/leanverifier
       - name: Pytest unit + coverage
-        run: uv run python -m pytest tests/unit tests/schema --cov=src/leanverifier --cov-fail-under=70
+        # Include security + non-lean integration so CLI/evidence paths count toward
+        # the gate; lake-backed verify stays in dedicated jobs.
+        run: >
+          uv run python -m pytest
+          tests/unit tests/schema tests/security tests/integration
+          -m "not lean"
+          --cov=src/leanverifier --cov-fail-under=70
 
   schema-negative:
     runs-on: ubuntu-latest
