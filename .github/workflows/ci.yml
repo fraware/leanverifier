@@ -117,7 +117,13 @@ jobs:
       - name: Mypy
         run: uv run mypy src/leanverifier
       - name: Pytest unit + coverage
-        run: uv run python -m pytest tests/unit tests/schema --cov=src/leanverifier --cov-fail-under=70
+        # Include security + non-lean integration so CLI/evidence paths count toward
+        # the gate; lake-backed verify stays in dedicated jobs.
+        run: >
+          uv run python -m pytest
+          tests/unit tests/schema tests/security tests/integration
+          -m "not lean"
+          --cov=src/leanverifier --cov-fail-under=70
 
   schema-negative:
     runs-on: ubuntu-latest
@@ -154,7 +160,13 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --frozen --all-extras
+      - name: Warm packaged Lake cache
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
+        run: uv run python scripts/warm_packaged_lake.py --seed-from .
       - name: Positive verify + inspect (markers, not -k alone)
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
         run: uv run python -m pytest tests/integration -m "positive and lean" --maxfail=1
 
   integration-negative:
@@ -181,7 +193,13 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --frozen --all-extras
+      - name: Warm packaged Lake cache
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
+        run: uv run python scripts/warm_packaged_lake.py --seed-from .
       - name: Mutation table (verify/audit/inspect)
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
         run: uv run python -m pytest tests/mutation -m mutation --maxfail=1
 
   security-tests:
@@ -242,7 +260,13 @@ jobs:
           python-version: "3.11"
           enable-cache: true
       - run: uv sync --frozen --all-extras
+      - name: Warm packaged Lake cache
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
+        run: uv run python scripts/warm_packaged_lake.py --seed-from .
       - name: Execute README/user-guide CLI commands
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
         run: uv run python scripts/verify_docs.py --mode commands
 
   wheel-smoke:
@@ -259,9 +283,16 @@ jobs:
           enable-cache: true
       - name: Sync frozen deps
         run: uv sync --frozen --all-extras
+      - name: Warm packaged Lake cache
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
+        run: uv run python scripts/warm_packaged_lake.py --seed-from .
       - name: Build wheel and sdist
         run: uv build
       - name: Smoke install from /tmp with verify
+        env:
+          LEANVERIFIER_CACHE: /tmp/lv-pkg-cache
+          LEANVERIFIER_VERIFY_TIMEOUT: "1800"
         run: |
           uv run python scripts/smoke_wheel.py --dist dist --artifact both --require-verify
 

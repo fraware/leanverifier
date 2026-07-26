@@ -1,3 +1,13 @@
-
+# Shell scripts always use LF (CI / Unix runners).
 *.sh text eol=lf
 
+# Digest-checked packaged resources and Lean sources must be LF-canonical.
+# hashes.json is generated from these bytes; CRLF checkouts break CI (F-007).
+*.lean text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+lean-toolchain text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.md text eol=lf
