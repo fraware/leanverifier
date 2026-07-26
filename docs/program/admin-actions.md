@@ -2,10 +2,10 @@
 
 ## GitHub repository settings (Mateo / org admin)
 
-1. Rename default branch `master` → `main` on https://github.com/fraware/leanverifier
+1. ~~Rename default branch `master` → `main` on https://github.com/fraware/leanverifier~~ **Done** (default is `main`)
 2. Update local remotes: `git fetch origin` and set upstream tracking to `origin/main`
-3. Confirm `origin/HEAD` → `refs/remotes/origin/main`
-4. After rename is confirmed and push CI is green on `main`, remove `master` from `on.push.branches` in `.github/workflows/ci.yml` (R-00 keeps both until then)
+3. Confirm `origin/HEAD` → `refs/remotes/origin/main` (`git remote set-head origin -a`)
+4. ~~After rename, remove `master` from `on.push.branches` in `.github/workflows/ci.yml`~~ **Done** (`master` remains on `pull_request` only while legacy PRs drain)
 5. Activate a branch ruleset on `main` **only after** real multi-party CODEOWNERS handles exist:
    - Required PR reviews (implementer ≠ sole formal reviewer)
    - Require CODEOWNERS review
