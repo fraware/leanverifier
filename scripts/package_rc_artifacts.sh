@@ -1,11 +1,42 @@
 #!/usr/bin/env bash
-# Package RC artifacts into $1 (default: artifacts/)
-# Live provenance attestations remain a GitHub Actions concern (see release-rc.yml).
+# Package RC artifacts into $1 (default: artifacts/).
+#
+# Requirements (F-015/F-016/F-017):
+#   - Full axiom report via real #print axioms (NO --skip-lean)
+#   - Tool-generated CycloneDX SBOM (pinned cyclonedx-bom) + Lean/mathlib enrichment
+#   - SOURCE_DATE_EPOCH from the release commit for deterministic stamps
+#
+# Does NOT create tags, publish to PyPI, or authorize an RC (R-08 gate).
+# Live provenance attestations remain a GitHub Actions concern (release-rc.yml).
 set -euo pipefail
-OUT="${1:-artifacts}"
-mkdir -p "$OUT"
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
+OUT="${1:-artifacts}"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+export TZ=UTC
+export PYTHONHASHSEED=0
+export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(git log -1 --format=%ct)}"
+COMMIT="$(git rev-parse HEAD)"
+
+if ! command -v lake >/dev/null 2>&1; then
+  echo "error: lake is required for RC packaging (full axiom report; no --skip-lean)" >&2
+  exit 1
+fi
+
+mkdir -p "$OUT"
+# Fresh package directory contents (keep directory node).
+find "$OUT" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+
+echo "package_rc_artifacts: SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}"
+echo "package_rc_artifacts: HEAD=${COMMIT}"
+
+# Ensure oleans exist for #print axioms / PublicAxioms.
+if [[ "${SKIP_LAKE_BUILD:-0}" != "1" ]]; then
+  lake build
+fi
+
+# Core provenance copies.
 cp "$ROOT/examples/affine_binary/model.json" "$OUT/"
 cp "$ROOT/examples/affine_binary/request.json" "$OUT/"
 cp "$ROOT/lean-toolchain" "$OUT/"
@@ -15,59 +46,55 @@ cp "$ROOT/SECURITY.md" "$OUT/"
 cp "$ROOT/lakefile.toml" "$OUT/"
 cp "$ROOT/lake-manifest.json" "$OUT/"
 
-# Optional wheel from python -m build
-if compgen -G "$ROOT/dist/*.whl" > /dev/null; then
-  cp "$ROOT"/dist/*.whl "$OUT/"
-fi
+# Optional wheel/sdist from python -m build / uv build
+shopt -s nullglob
+for f in "$ROOT"/dist/*.whl "$ROOT"/dist/*.tar.gz; do
+  cp "$f" "$OUT/"
+done
+shopt -u nullglob
 
-# Generate Lean module bytes (no compile) for artifact inspection
-python - <<'PY' "$ROOT" "$OUT"
-import sys
-from pathlib import Path
-root, out = map(Path, sys.argv[1:])
-sys.path.insert(0, str(root / "src"))
-from leanverifier.generator import write_module_atomic
-from leanverifier.manifest import load_model_path, load_request_path
-model = load_model_path(root / "examples/affine_binary/model.json")
-request = load_request_path(root / "examples/affine_binary/request.json")
-path = write_module_atomic(model, request, out.resolve())
-print(path)
-PY
-
-# Source axiom audit (skip-lean) for offline packaging; full audit runs after lake build
-python "$ROOT/scripts/audit_axioms.py" --repo "$ROOT" --skip-lean | tee "$OUT/axiom-report.txt"
-
-# Minimal CycloneDX-ish SBOM scaffold (component inventory; live attestation is remote)
-python - <<'PY' "$ROOT" "$OUT"
-import json, hashlib, sys
-from pathlib import Path
-from datetime import datetime, timezone
-root, out = map(Path, sys.argv[1:])
-toolchain = (root / "lean-toolchain").read_text(encoding="utf-8").strip()
-components = [
-    {"type": "library", "name": "leanverifier", "version": "0.1.0",
-     "purl": "pkg:generic/leanverifier@0.1.0"},
-    {"type": "library", "name": "lean4", "version": toolchain,
-     "purl": f"pkg:generic/lean4@{toolchain}"},
-    {"type": "library", "name": "mathlib4", "version": "v4.32.0",
-     "purl": "pkg:github/leanprover-community/mathlib4@v4.32.0"},
-    {"type": "library", "name": "jsonschema", "version": "4.23.0",
-     "purl": "pkg:pypi/jsonschema@4.23.0"},
-]
-sbom = {
-    "bomFormat": "CycloneDX",
-    "specVersion": "1.5",
-    "version": 1,
-    "metadata": {
-        "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "component": {"type": "application", "name": "leanverifier", "version": "0.1.0-rc1"},
-        "note": "Local scaffold only; GitHub Actions provenance attestation is required for release trust.",
-    },
-    "components": components,
+# Deterministic generated Lean module for artifact inspection.
+GEN_DIR="$(mktemp -d "${TMPDIR:-/tmp}/lv-rc-gen.XXXXXX")"
+VERIFY_OUT=""
+cleanup() {
+  rm -rf "$GEN_DIR"
+  if [[ -n "${VERIFY_OUT}" && -d "${VERIFY_OUT}" ]]; then
+    rm -rf "$VERIFY_OUT"
+  fi
 }
-(out / "sbom.json").write_text(json.dumps(sbom, indent=2) + "\n", encoding="utf-8")
-print("wrote sbom.json")
-PY
+trap cleanup EXIT
+
+run_py() {
+  if command -v uv >/dev/null 2>&1 && [[ -f "$ROOT/uv.lock" ]]; then
+    uv run "$@"
+  else
+    PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}" "$@"
+  fi
+}
+
+run_py leanverifier generate \
+  --model "$ROOT/examples/affine_binary/model.json" \
+  --request "$ROOT/examples/affine_binary/request.json" \
+  --out-dir "$GEN_DIR"
+
+GENERATED="$(ls "$GEN_DIR"/GeneratedModel_*.lean | head -n 1)"
+cp "$GENERATED" "$OUT/"
+GENERATED_NAME="$(basename "$GENERATED")"
+
+# Full axiom audit — library + generated (F-016: no --skip-lean).
+run_py python "$ROOT/scripts/audit_axioms.py" \
+  --repo "$ROOT" \
+  --generated "$GENERATED" \
+  --report "$OUT/axiom-report.txt"
+
+# Positive verify evidence (verification-result.json).
+VERIFY_OUT="$(mktemp -d "${TMPDIR:-/tmp}/lv-rc-verify.XXXXXX")"
+run_py leanverifier verify \
+  --model "$ROOT/examples/affine_binary/model.json" \
+  --request "$ROOT/examples/affine_binary/request.json" \
+  --output "$VERIFY_OUT"
+cp "$VERIFY_OUT/verification-result.json" "$OUT/"
+cp "$VERIFY_OUT/checksums.sha256" "$OUT/verification-bundle-checksums.sha256"
 
 {
   echo "# RC artifact list"
@@ -75,20 +102,37 @@ PY
   echo "- GeneratedModel_*.lean"
   echo "- lean-toolchain / lakefile.toml / lake-manifest.json"
   echo "- CLAIMS.md / STATUS.md / SECURITY.md"
-  echo "- wheel (if built)"
-  echo "- axiom-report.txt"
-  echo "- sbom.json (local scaffold; attest remotely)"
+  echo "- wheel / sdist (if built under dist/)"
+  echo "- axiom-report.txt (full #print axioms; no --skip-lean)"
+  echo "- verification-result.json (positive verify)"
+  echo "- sbom.json (cyclonedx-bom pinned tool + Lean/mathlib enrichment)"
   echo "- checksums.sha256"
-  echo "- verification-result.json (produced by full verify job with Lean)"
-  echo "- LIVE ATTESTATIONS: blocked until RC tag runs on GitHub Actions"
+  echo "- LIVE ATTESTATIONS: GitHub Actions attest job only; RC tag blocked until R-08"
+  echo "- SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH}"
+  echo "- commit=${COMMIT}"
+  echo "- generated=${GENERATED_NAME}"
 } > "$OUT/ARTIFACTS.md"
 
-(
-  cd "$OUT"
-  if command -v sha256sum >/dev/null; then
-    sha256sum * > checksums.sha256
-  elif command -v shasum >/dev/null; then
-    shasum -a 256 * > checksums.sha256
-  fi
-)
+# Authoritative SBOM via pinned cyclonedx-bom (F-017). Written before checksums
+# so component file hashes cover the packaged evidence set (excluding sbom/checksums).
+run_py python "$ROOT/scripts/generate_sbom.py" \
+  --repo "$ROOT" \
+  --artifacts "$OUT" \
+  --out "$OUT/sbom.json"
+
+# Deterministic checksums: sorted file list, exclude the checksum file itself.
+python3 - <<'PY' "$OUT"
+import hashlib
+import sys
+from pathlib import Path
+
+out = Path(sys.argv[1])
+lines: list[str] = []
+for path in sorted(p for p in out.iterdir() if p.is_file() and p.name != "checksums.sha256"):
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    lines.append(f"{digest}  {path.name}")
+(out / "checksums.sha256").write_text("\n".join(lines) + "\n", encoding="utf-8")
+print(f"wrote {out / 'checksums.sha256'} ({len(lines)} files)")
+PY
+
 echo "Wrote RC artifacts to $OUT"
