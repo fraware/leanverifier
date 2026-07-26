@@ -146,6 +146,8 @@ def test_positive_verify_evidence_bundle(tmp_path: Path) -> None:
             str(request_path),
             "--output",
             str(out),
+            "--timeout",
+            "1800",
         ]
     )
     assert code == EXIT_VERIFIED

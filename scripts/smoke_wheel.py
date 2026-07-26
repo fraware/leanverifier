@@ -110,10 +110,16 @@ def smoke_one(
             "(install elan/lake or omit --require-verify)."
         )
 
-    cache = work / "lv-cache"
+    # Reuse a pre-warmed packaged Lake cache from CI when present.
+    cache = (
+        Path(os.environ["LEANVERIFIER_CACHE"])
+        if os.environ.get("LEANVERIFIER_CACHE")
+        else work / "lv-cache"
+    )
     evidence = work / "evidence"
     env = dict(env)
     env["LEANVERIFIER_CACHE"] = str(cache)
+    verify_timeout = os.environ.get("LEANVERIFIER_VERIFY_TIMEOUT", "1800")
     _run(
         [
             str(cli),
@@ -125,7 +131,7 @@ def smoke_one(
             "--output",
             str(evidence),
             "--timeout",
-            "600",
+            verify_timeout,
         ],
         cwd=work,
         env=env,

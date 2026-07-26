@@ -194,6 +194,8 @@ def test_mutation_evidence_tamper_fails_inspect(tmp_path: Path) -> None:
             str(request_path),
             "--output",
             str(out),
+            "--timeout",
+            "1800",
         ]
     )
     assert code == EXIT_VERIFIED

@@ -93,6 +93,7 @@ def test_checkout_lean_mirrors_match_packaged() -> None:
         key = f"lean-project/{rel}"
         assert hashes[key] == _lf_sha256(lean.read_bytes())
 
+
 def test_hashes_json_is_sorted_object() -> None:
     raw = json.loads(
         Path(__file__)
