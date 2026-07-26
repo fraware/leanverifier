@@ -30,11 +30,13 @@ Do not open public issues for exploitable generator, path-escape, or CI privileg
 ## Generator / CLI hardening goals
 
 - No `eval` / `exec` / shell interpolation of user data
-- Subprocess: `shell=False`, argv list, timeout, minimal environment
-- Output path containment (`resolve`; parent must equal output root); reject symlink roots
+- Subprocess: `shell=False`, argv list, timeout with process-group kill, minimal environment (`_strip_env`)
+- Output path containment: `lstat` every path component **before** `resolve`; reject any symlink component; CLI does not resolve the user path away before the check
+- Resource limits (1 MiB manifests, dim ≤ 4096, rational ≤ 256 chars, comment ≤ 512, generated Lean ≤ 8 MiB, retained logs ≤ 16 MiB) with stable failure codes — see [docs/model-format.md](docs/model-format.md)
 - Module names match `GeneratedModel_<16 hex>` only
 - Digest mismatch fails closed before compile
 - Insufficient margin returns `not-certified` (exit 2), never `verified`
+- Malformed UTF-8 input fails with `utf8-invalid` (exit 3)
 
 ## Trusted computing base
 
