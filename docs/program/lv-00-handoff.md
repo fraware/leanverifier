@@ -14,7 +14,7 @@
 
 ## Claim posture after reset
 
-Supported claim is only exact affine binary + L∞ margin robustness. Former production/enterprise/web/distributed claims withdrawn.
+Post-LV-00 target surface is exact affine binary + L∞ margin robustness only. Former production/enterprise/web/distributed claims withdrawn. **No LV-C* claim is Supported** until the signed release-authorization checklist (see current `CLAIMS.md` / `STATUS.md`); LV-00 vocabulary used Implementation / Experimental / Planned — not premature Supported.
 
 ## Follow-on delivered in the same working tree
 
@@ -32,6 +32,6 @@ See `docs/program/admin-actions.md`:
 ## Acceptance evidence
 
 - Active docs link to STATUS / CLAIMS / SECURITY
-- `CLAIMS.md` covers README capabilities as Supported / Experimental / Planned
+- `CLAIMS.md` covers README capabilities with Implementation/Assurance columns (no Supported until checklist)
 - `python scripts/verify_docs.py` → DOC VERIFY PASSED
 - Legacy web path carries SECURITY / WARNING headers
