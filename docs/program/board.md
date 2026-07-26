@@ -15,8 +15,9 @@
 | LV-07 | Tests | Mateo | done | |
 | LV-08 | Legacy isolation | Mateo | done | |
 | LV-09 | Assurance docs | Mateo | done | |
-| LV-10 | RC pipeline | Mateo | scaffolding | Live attestations on GitHub |
-| LV-11 | Independent review | — | blocked | External reviewers |
+| LV-10 | RC pipeline | Mateo | scaffolding (R-07) | Live public RC tag blocked |
+| LV-11 | Independent review | — | packets ready; blocked | External reviewers TBD; see `docs/program/review/` |
+| R-08 | Release authorization gate | Mateo | scaffolding only | Checklist unsigned; no v0.1.0-rc1 |
 
 ## Admin actions (GitHub)
 

@@ -1,11 +1,16 @@
 name: Release RC scaffolding
 
+# Builds reproducible RC artifact bundles, attestations, and an end-to-end
+# reproduction job. Does NOT authorize a public RC: do not cut v0.1.0-rc*
+# tags or publish to PyPI until R-08 independent review (see STATUS.md).
+
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: "Prerelease tag (e.g. v0.1.0-rc1)"
-        required: true
+      ref_note:
+        description: "Scaffolding note (do not treat as release authorization)"
+        required: false
+        default: "R-07 reproducible RC scaffolding only — not authorized"
   push:
     tags:
       - "v0.1.0-rc*"
@@ -13,21 +18,80 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release-rc-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TZ: UTC
+  PYTHONHASHSEED: "0"
+
 jobs:
   build-artifacts:
     runs-on: ubuntu-latest
+    outputs:
+      source_date_epoch: ${{ steps.epoch.outputs.source_date_epoch }}
+      git_commit: ${{ steps.epoch.outputs.git_commit }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          fetch-depth: 0
+
+      - name: Set SOURCE_DATE_EPOCH from release commit
+        id: epoch
+        run: |
+          EPOCH="$(git log -1 --format=%ct)"
+          COMMIT="$(git rev-parse HEAD)"
+          echo "source_date_epoch=${EPOCH}" >> "${GITHUB_OUTPUT}"
+          echo "git_commit=${COMMIT}" >> "${GITHUB_OUTPUT}"
+          echo "SOURCE_DATE_EPOCH=${EPOCH}" >> "${GITHUB_ENV}"
+          echo "SOURCE_DATE_EPOCH=${EPOCH}"
+          echo "COMMIT=${COMMIT}"
+
+      - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          build: true
+          lint: false
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
           python-version: "3.11"
-      - name: Build wheel + artifact bundle
+          enable-cache: true
+
+      - name: Sync frozen deps (incl. release SBOM tool)
+        run: uv sync --frozen --all-extras
+
+      - name: Build wheel + sdist (SOURCE_DATE_EPOCH)
         run: |
-          python -m pip install -e ".[dev]" build
-          python -m build
-          mkdir -p artifacts
-          cp dist/*.whl artifacts/ || true
-          bash scripts/package_rc_artifacts.sh artifacts
+          rm -rf dist
+          uv build
+
+      - name: Package RC artifacts (full axiom report + tool SBOM)
+        run: |
+          chmod +x scripts/package_rc_artifacts.sh scripts/generate_sbom.py
+          SKIP_LAKE_BUILD=1 bash scripts/package_rc_artifacts.sh artifacts
+
+      - name: Guard against skip-lean / scaffold SBOM regressions
+        run: |
+          set -euo pipefail
+          grep -q "depends on axioms\|does not depend on any axioms\|AXIOM\|propext\|Classical.choice\|Quot.sound" artifacts/axiom-report.txt
+          if grep -qi "skip-lean\|scaffold only\|handwritten" artifacts/sbom.json; then
+            echo "SBOM still looks like a handwritten scaffold" >&2
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          sbom = json.loads(Path("artifacts/sbom.json").read_text(encoding="utf-8"))
+          assert sbom.get("bomFormat") == "CycloneDX", sbom.get("bomFormat")
+          names = {c.get("name") for c in sbom.get("components") or []}
+          assert "lean4" in names and "mathlib" in names, names
+          props = (sbom.get("metadata") or {}).get("properties") or []
+          gen = next((p.get("value") for p in props if p.get("name") == "leanverifier:sbom-generator"), "")
+          assert "cyclonedx-bom==" in str(gen), gen
+          print("SBOM guard OK:", gen)
+          PY
+
       - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: rc-artifacts
@@ -42,23 +106,64 @@ jobs:
       attestations: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
       - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: rc-artifacts
           path: artifacts
-      - name: Attest artifact directory
+
+      - name: Attest artifact directory (provenance)
         uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
         with:
-          subject-path: artifacts/*
+          subject-path: |
+            artifacts/*.whl
+            artifacts/*.tar.gz
+            artifacts/sbom.json
+            artifacts/axiom-report.txt
+            artifacts/checksums.sha256
+            artifacts/verification-result.json
 
   reproduce:
     runs-on: ubuntu-latest
     needs: [build-artifacts]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Restore SOURCE_DATE_EPOCH
+        run: |
+          echo "SOURCE_DATE_EPOCH=${{ needs.build-artifacts.outputs.source_date_epoch }}" >> "${GITHUB_ENV}"
+          echo "SOURCE_DATE_EPOCH=${{ needs.build-artifacts.outputs.source_date_epoch }}"
+
+      - uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          build: true
+          lint: false
+
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          python-version: "3.11"
+          enable-cache: true
+
       - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: rc-artifacts
           path: artifacts
-      - name: Reproduce checksums
-        run: bash scripts/reproduce_release.sh artifacts
+
+      - name: End-to-end reproduce
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          REPRO_KEEP_DIR: ${{ runner.temp }}/repro-artifacts
+        run: |
+          chmod +x scripts/reproduce_release.sh scripts/package_rc_artifacts.sh scripts/run_lean4checker.sh
+          bash scripts/reproduce_release.sh artifacts "${RUNNER_TEMP}/reproduction-log.txt"
+
+      - name: Upload reproduction log
+        if: always()
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        with:
+          name: reproduction-log
+          path: |
+            ${{ runner.temp }}/reproduction-log.txt
+            ${{ runner.temp }}/repro-artifacts/

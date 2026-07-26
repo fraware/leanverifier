@@ -2,9 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from leanverifier.generator import render_module, write_module_atomic
 from leanverifier.manifest import parse_model, parse_request
 from tests.fixtures.builders import make_model, make_request
+
+pytestmark = pytest.mark.unit
 
 
 def test_generator_determinism_100(tmp_path: Path, monkeypatch) -> None:  # noqa: ANN001
@@ -16,6 +20,9 @@ def test_generator_determinism_100(tmp_path: Path, monkeypatch) -> None:  # noqa
     assert name.startswith("GeneratedModel_")
     assert "![" not in source
     assert "Fin 3" in source
+    assert "norm_num" in source
+    assert "native" + "_decide" not in source
+    assert "+" + "native" not in source
     digests: set[bytes] = set()
     for i in range(100):
         root = (tmp_path / f"out_{i}").resolve()

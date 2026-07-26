@@ -6,8 +6,9 @@ import LeanVerifier.Theorem.AffineMarginRobustness
 Supported theorems may depend only on Lean's standard classical axioms:
 `propext`, `Classical.choice`, and `Quot.sound`.
 
-Custom axioms, `sorryAx`, and compiler-trust flags are forbidden.
-`scripts/audit_axioms.py` enforces this gate in CI.
+Custom axioms, `sorryAx`, dedicated native-decide axioms, and compiler-trust
+flags are forbidden. `scripts/audit_axioms.py` enforces this gate in CI for
+both library declarations and concrete generated modules.
 -/
 
 namespace LeanVerifier.Audit
@@ -25,5 +26,9 @@ theorem affine_margin_robustness_axioms_anchor
 #print axioms abs_score_sub_score_le
 #print axioms classify_true_of_margin
 #print axioms classify_false_of_margin
+#print axioms repeated_weight_score_ones
+#print axioms repeated_weight_classify_ones
+#print axioms repeated_weight_score_focus
+#print axioms repeated_weight_classify_focus
 
 end LeanVerifier.Audit

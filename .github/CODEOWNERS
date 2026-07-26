@@ -1,26 +1,57 @@
-# Default owners — replace placeholders with real GitHub usernames before enabling branch rulesets.
-# Program lead / claim approver / release authority: Mateo Petel (@fraware assumed).
+# CODEOWNERS — path-scoped roles
+#
+# Program lead / claim approver / release authority: Mateo Petel (@fraware).
+# Multi-party role handles are PENDING — see docs/program/admin-actions.md.
+# Until Mateo supplies distinct GitHub usernames, @fraware remains the listed
+# owner for every role. Do not invent fake users. Do not enable a
+# bypass-resistant branch ruleset that would lock merges to a nonexistent
+# multi-party owner set.
 
+# Default catch-all
 * @fraware
 
-# Formal kernel
+# ---------------------------------------------------------------------------
+# Formal kernel (Formal Lead / Formal Reviewer — pending second handle)
+# ---------------------------------------------------------------------------
 /LeanVerifier/ @fraware
+/LeanVerifier.lean @fraware
 /lakefile.toml @fraware
 /lean-toolchain @fraware
 /lake-manifest.json @fraware
 
-# Schemas + generator
+# ---------------------------------------------------------------------------
+# Generator + schemas (Generator Lead — pending handle)
+# ---------------------------------------------------------------------------
 /schemas/ @fraware
 /src/leanverifier/ @fraware
+/examples/ @fraware
 /pyproject.toml @fraware
 
-# Security-sensitive paths
+# ---------------------------------------------------------------------------
+# Security-sensitive paths (Security Reviewer — pending handle)
+# ---------------------------------------------------------------------------
 /SECURITY.md @fraware
-/.github/workflows/ @fraware
 /scripts/audit_axioms.py @fraware
 /experimental/ @fraware
+/tests/security/ @fraware
+/tests/mutation/ @fraware
 
-# Documentation / claims
+# ---------------------------------------------------------------------------
+# Release + workflows (Build/Release — pending handle)
+# ---------------------------------------------------------------------------
+/.github/workflows/ @fraware
+/.github/dependabot.yml @fraware
+/.github/CODEOWNERS @fraware
+/scripts/reproduce_release.sh @fraware
+/scripts/package_rc_artifacts.sh @fraware
+/scripts/generate_sbom.py @fraware
+/docs/release-process.md @fraware
+/Dockerfile @fraware
+
+# ---------------------------------------------------------------------------
+# Documentation / claims (Docs — pending handle; claim changes need program lead)
+# ---------------------------------------------------------------------------
 /CLAIMS.md @fraware
 /STATUS.md @fraware
+/README.md @fraware
 /docs/ @fraware
