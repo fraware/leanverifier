@@ -92,7 +92,8 @@ def main() -> int:
             continue
         entries[rel] = _sha(path.read_bytes())
     out = RES / "hashes.json"
-    out.write_text(json.dumps(entries, indent=2, sort_keys=True) + "\n", encoding="utf-8", newline="\n")
+    payload = json.dumps(entries, indent=2, sort_keys=True) + "\n"
+    out.write_text(payload, encoding="utf-8", newline="\n")
     print(f"wrote {len(entries)} hashes to {out}")
     return 0
 
