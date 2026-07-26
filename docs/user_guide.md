@@ -22,11 +22,11 @@ From the repository root (`https://github.com/fraware/leanverifier`):
 lake update
 lake build
 
-# Python CLI
-python -m pip install -e ".[dev]"
+# Python CLI (frozen lockfile)
+uv sync --frozen --all-extras
 ```
 
-Requires Lean `v4.32.0` (see `lean-toolchain`) and Python 3.11+.
+Requires Lean `v4.32.1` (see `lean-toolchain`) and Python 3.11+.
 
 ## Inputs
 
@@ -38,16 +38,17 @@ See [model-format.md](model-format.md). Worked example: `examples/affine_binary/
 ## CLI
 
 ```bash
-leanverifier validate-model examples/affine_binary/model.json
-leanverifier validate-request examples/affine_binary/request.json
-leanverifier generate --model examples/affine_binary/model.json \
+uv run leanverifier validate-model examples/affine_binary/model.json
+uv run leanverifier validate-request examples/affine_binary/request.json
+uv run leanverifier generate --model examples/affine_binary/model.json \
   --request examples/affine_binary/request.json --out-dir /tmp/lv-out
-leanverifier verify --model examples/affine_binary/model.json \
-  --request examples/affine_binary/request.json
-leanverifier inspect path/to/verification-result.json
+uv run leanverifier verify --model examples/affine_binary/model.json \
+  --request examples/affine_binary/request.json \
+  --output /tmp/lv-evidence
+uv run leanverifier inspect /tmp/lv-evidence
 ```
 
-`verify` builds in an isolated temporary workspace under the pinned toolchain, then runs the axiom audit. It does not compile into your working tree.
+`verify` requires `--output`. It builds in an isolated temporary workspace under the pinned toolchain, runs the axiom audit, then writes an immutable evidence bundle (canonical inputs, generated Lean, logs, axiom report, result, checksums) before deleting the temp workspace.
 
 ### Exit codes
 
@@ -64,7 +65,7 @@ leanverifier inspect path/to/verification-result.json
 
 ## Reading results
 
-`verification-result.json` records status, digests, toolchain pin, and theorem reference.
+The evidence bundle under `--output` is the authoritative record. `verification-result.json` includes claim, digests, generator version, Lean toolchain, mathlib revision, build/audit exit codes, axiom audit status, and `evidence_bundle_digest`. Use `leanverifier inspect <dir>` to recompute digests and reject tampering (`--rerun` optionally re-executes verify).
 Treat `verified` as certification of the concrete margin instance only — not deployment readiness or floating-point correctness.
 
 ## Further reading
