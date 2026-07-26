@@ -11,11 +11,24 @@ from leanverifier.canonicalize import (
 )
 from leanverifier.errors import InvalidInputError
 
+pytestmark = pytest.mark.unit
+
 
 def test_canonicalize_basics() -> None:
     assert canonicalize_rational(Fraction(2, 4)) == "1/2"
     assert canonicalize_rational(Fraction(0, 5)) == "0"
     assert canonicalize_rational(Fraction(3, 1)) == "3"
+
+
+def test_canonicalize_preserves_large_denominators() -> None:
+    """F-009: never approximate via limit_denominator; denom > 1e6 stays exact."""
+    huge = Fraction(1, 10**7 + 3)  # > 1_000_000; not reduced away
+    assert huge.denominator > 1_000_000
+    text = canonicalize_rational(huge)
+    assert text == f"1/{huge.denominator}"
+    assert parse_rational(text) == huge
+    # Round-trip through Fraction without approximation.
+    assert canonicalize_rational(Fraction(text)) == text
 
 
 def test_parse_rejects_noncanonical() -> None:
