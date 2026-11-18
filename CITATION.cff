@@ -7,8 +7,6 @@ authors:
     given-names: "Matéo H."
 repository-code: "https://github.com/fraware/leanverifier"
 license: MIT
-version: "0.1.0"
-date-released: "2026-07-24"
 abstract: >-
   Technical preview of exact formal checks for affine binary classifiers over
   rationals, with an L-infinity margin-robustness theorem, deterministic
